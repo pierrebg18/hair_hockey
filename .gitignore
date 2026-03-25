@@ -1,0 +1,183 @@
+```gitignore
+# ===========================
+# JAVA
+# ===========================
+*.class
+*.jar
+*.war
+*.ear
+*.nar
+*.zip
+*.tar.gz
+*.rar
+hs_err_pid*
+replay_pid*
+
+# ===========================
+# MAVEN
+# ===========================
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+.mvn/wrapper/maven-wrapper.jar
+
+# ===========================
+# JAVAFX
+# ===========================
+*.fxbk
+*.fxml.bak
+
+# ===========================
+# INTELLIJ IDEA
+# ===========================
+.idea/*
+*.iws
+*.iml
+*.ipr
+out/
+.idea_modules/
+atlassian-ide-plugin.xml
+com_crashlytics_export_strings.xml
+crashlytics.properties
+crashlytics-build.properties
+fabric.properties
+
+# ===========================
+# VSCODE
+# ===========================
+.vscode/
+*.code-workspace
+.history/
+*.vsix
+
+# ===========================
+# ECLIPSE
+# ===========================
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings/
+.springBeans
+.sts4-cache
+bin/
+!**/src/main/**/bin/
+!**/src/test/**/bin/
+
+# ===========================
+# NETBEANS
+# ===========================
+nbproject/private/
+nbbuild/
+dist/
+nbdist/
+nbactions.xml
+nb-configuration.xml
+.nb-gradle/
+
+# ===========================
+# GIT
+# ===========================
+*.orig
+*.BACKUP.*
+*.BASE.*
+*.LOCAL.*
+*.REMOTE.*
+*_BACKUP_*.txt
+*_BASE_*.txt
+*_LOCAL_*.txt
+*_REMOTE_*.txt
+
+# ===========================
+# WINDOWS
+# ===========================
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+*.stackdump
+[Dd]esktop.ini
+$RECYCLE.BIN/
+*.cab
+*.msi
+*.msix
+*.msm
+*.msp
+*.lnk
+
+# ===========================
+# MACOS
+# ===========================
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+.apdisk
+
+# ===========================
+# LINUX
+# ===========================
+*~
+.fuse_hidden*
+.directory
+.Trash-*
+.nfs*
+
+# ===========================
+# LOGS & RUNTIME
+# ===========================
+*.log
+*.log.*
+logs/
+log/
+*.pid
+*.seed
+*.pid.lock
+
+# ===========================
+# ENV & SECRETS
+# ===========================
+.env
+.env.*
+*.properties.local
+secrets.yml
+secrets.yaml
+application-local.properties
+application-local.yml
+
+# ===========================
+# DOCKER
+# ===========================
+.docker/
+docker-compose.override.yml
+
+# ===========================
+# MISC
+# ===========================
+*.swp
+*.swo
+*.tmp
+*.bak
+*.cache
+.cache/
+tmp/
+temp/
+```
