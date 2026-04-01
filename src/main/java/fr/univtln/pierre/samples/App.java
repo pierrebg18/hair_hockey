@@ -4,6 +4,7 @@ import com.jme3.app.SimpleApplication;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.light.PointLight;
+import com.jme3.input.InputManager;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
@@ -20,9 +21,14 @@ import fr.univtln.pierre.samples.modele.Puck;
 import fr.univtln.pierre.samples.modele.Side;
 import fr.univtln.pierre.samples.modele.Table;
 import fr.univtln.pierre.samples.modele.LightManager;
+import fr.univtln.pierre.samples.game.Move;
+
 public class App extends SimpleApplication {
 
     private BulletAppState bulletAppState;
+        private BulletAppState bulletAppState;
+        //private InputManager inputManager;
+        private Move move;
 
     public static void main(String[] args){
         App app = new App();
@@ -41,6 +47,9 @@ public class App extends SimpleApplication {
         placeCameraOpponentSide();
         Node pivot = new Node("pivot");
         rootNode.attachChild(pivot); // put this node in the scene
+        move = new Move();
+        move.setUpKeys(inputManager);
+
 
         bulletAppState = new BulletAppState();
         stateManager.attach(bulletAppState);
@@ -52,7 +61,6 @@ public class App extends SimpleApplication {
         ColorRGBA ultraChaud = new ColorRGBA(1f, 0.75f, 0.45f, 1f);
         //LightManager.addLight(rootNode,new Vector3f(0f, 3f, 0f), ColorRGBA.Orange, 2f, 10f);
         LightManager.addLight(rootNode,new Vector3f(0f, 3f, 0f), ultraChaud, 2f, 10f);
-
 
 
 
@@ -95,6 +103,8 @@ public class App extends SimpleApplication {
         Geometry paddleGeometry = myPaddle.createGeometryMy(table);
         myPaddle.createPhysic(paddleGeometry,bulletAppState);
         paddleGeometry.setMaterial(matPaddle);
+        move.setpaddle(myPaddle);
+        move.setpaddlegeo(paddleGeometry);
 
         // opponent's paddle
         Paddle opponentPaddle = new Paddle(0.4F, 0.2F, 0.1F, ColorRGBA.Gray);
@@ -143,4 +153,10 @@ public class App extends SimpleApplication {
         cam.setRotation(roll90x);
     }
 
+        }
+
+        @Override
+        public void simpleUpdate(float tpf) {
+                move.simpleUpdateMove(tpf);
+        }
 }
