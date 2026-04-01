@@ -4,6 +4,7 @@ import com.bulletphysics.dynamics.RigidBody;
 import com.jme3.app.SimpleApplication;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.control.RigidBodyControl;
+import com.jme3.input.InputManager;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.scene.Geometry;
@@ -18,6 +19,8 @@ import fr.univtln.pierre.samples.modele.Table;
 public class App extends SimpleApplication {
 
         private BulletAppState bulletAppState;
+        private InputManager inputManager;
+
 
         public static void main(String[] args){
         App app = new App();
@@ -32,10 +35,14 @@ public class App extends SimpleApplication {
         public App(){
         }
 
+
+
         @Override
         public void simpleInitApp() {
         Node pivot = new Node("pivot");
         rootNode.attachChild(pivot); // put this node in the scene
+        
+        
 
         bulletAppState = new BulletAppState();
         stateManager.attach(bulletAppState);

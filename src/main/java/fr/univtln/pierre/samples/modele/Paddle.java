@@ -46,4 +46,14 @@ public class Paddle {
         paddle_geo.addControl(paddle_phy);
         bulletAppState.getPhysicsSpace().add(paddle_phy);
     }
+
+
+    public Vector3f getposition(){
+        return this.position;
+    }
+
+    public void setposition(Vector3f vector3f){
+        this.position=vector3f;
+    }
+
 }
