@@ -1,5 +1,7 @@
 package fr.univtln.pierre.samples.modele;
 
+import com.jme3.bullet.BulletAppState;
+import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
@@ -37,5 +39,11 @@ public class Paddle {
         position = table.getPosition().add(-table.getWidth()/2, table.getThickness()+thickness, -table.getLenght()+lenght);
         paddle.setLocalTranslation(position);
         return paddle;
+    }
+
+    public void createPhysic(Geometry paddle_geo,BulletAppState bulletAppState){
+        RigidBodyControl paddle_phy = new RigidBodyControl(5.0f);
+        paddle_geo.addControl(paddle_phy);
+        bulletAppState.getPhysicsSpace().add(paddle_phy);
     }
 }

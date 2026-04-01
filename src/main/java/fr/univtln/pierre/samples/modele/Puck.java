@@ -42,10 +42,9 @@ public class Puck {
         return puck;
     }
 
-    public RigidBodyControl createPhysic(Geometry puck_geo,BulletAppState bulletAppState){
+    public void createPhysic(Geometry puck_geo,BulletAppState bulletAppState){
         RigidBodyControl puck_phy = new RigidBodyControl(5.0f);
         puck_geo.addControl(puck_phy);
         bulletAppState.getPhysicsSpace().add(puck_phy);
-        return puck_phy;
     }
 }
