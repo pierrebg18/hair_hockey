@@ -22,6 +22,7 @@ public class Puck {
     private Vector3f position;
     private ColorRGBA color;
     private Table table;
+    private RigidBodyControl puck_phy;
 
     public Puck(int axisSamples, int radialSamples, float radius, float height, ColorRGBA color, Table table) {
         this.axisSamples = axisSamples;
@@ -46,10 +47,11 @@ public class Puck {
     }
 
     public void createPhysic(Geometry puck_geo,BulletAppState bulletAppState){
-        RigidBodyControl puck_phy = new RigidBodyControl(5.0f);
+        puck_phy = new RigidBodyControl(10.0f);
         puck_geo.addControl(puck_phy);
         bulletAppState.getPhysicsSpace().add(puck_phy);
     }
+
     public void putOnMySide(){
         position = table.getPosition().add(0, 2*height, table.getLenght()/2);
     }

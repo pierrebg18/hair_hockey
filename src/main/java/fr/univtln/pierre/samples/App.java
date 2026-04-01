@@ -94,7 +94,7 @@ public class App extends SimpleApplication {
                 "Common/MatDefs/Misc/Unshaded.j3md");  // create a simple material
         matPaddle.setColor("Color", myPaddle.getColor());
         Geometry paddleGeometry = myPaddle.createGeometryMy(table);
-        //myPaddle.createPhysic(paddleGeometry,bulletAppState);
+        myPaddle.createPhysic(paddleGeometry,bulletAppState);
         paddleGeometry.setMaterial(matPaddle);
         move.setpaddle(myPaddle);
         move.setpaddlegeo(paddleGeometry);
@@ -116,7 +116,5 @@ public class App extends SimpleApplication {
         @Override
         public void simpleUpdate(float tpf) {
                 move.simpleUpdateMove(tpf);
-                
-                
         }
 }

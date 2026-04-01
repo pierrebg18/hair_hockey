@@ -65,27 +65,22 @@ public class Move implements ActionListener{
 
     public void simpleUpdateMove(float tpf) {
         Vector3f pos = paddle.getposition();
-        float speed=0.00f ;
+        float speed = 2f*tpf ;
+        Vector3f pos_final = new Vector3f(pos);
         if (left) {
-            Vector3f pos_final = new Vector3f(pos.x,pos.y,pos.z+speed);
-            paddle.setposition(pos_final);
-            paddle_geo.move(-0.1f, 0f, 0f);
+            pos_final = new Vector3f(pos.x-speed,pos.y,pos.z);
         }
         if (right) {
-            Vector3f pos_final = new Vector3f(pos.x,pos.y,pos.z-speed);
-            paddle.setposition(pos_final);
-            paddle_geo.move(0.1f, 0f, 0f);
+            pos_final = new Vector3f(pos.x+speed,pos.y,pos.z);
         }
         if (up) {
-            Vector3f pos_final = new Vector3f(pos.x+speed,pos.y,pos.z);
-            paddle.setposition(pos_final);
-            paddle_geo.move(0f,0f, -0.1f);
+            pos_final = new Vector3f(pos.x,pos.y,pos.z-speed);
         }
         if (down) {
-            Vector3f pos_final = new Vector3f(pos.x-speed,pos.y,pos.z);
-            paddle.setposition(pos_final);
-            paddle_geo.move(0f,0f, 0.1f);
+            pos_final = new Vector3f(pos.x,pos.y,pos.z+speed);
         }
+        paddle.setposition(pos_final);
+        paddle.getPaddle_phy().setPhysicsLocation(pos_final);
     }
     
 }
