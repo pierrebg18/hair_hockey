@@ -4,8 +4,10 @@ import com.bulletphysics.dynamics.RigidBody;
 import com.jme3.app.SimpleApplication;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.control.RigidBodyControl;
+import com.jme3.light.PointLight;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
+import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.system.AppSettings;
@@ -40,7 +42,14 @@ public class App extends SimpleApplication {
         stateManager.attach(bulletAppState);
 
         //light
-        LightManager.setUpLight(rootNode);
+        //LightManager.setUpLight(rootNode);
+
+        PointLight light = new PointLight();
+        light.setColor(ColorRGBA.White.mult(2f));
+        light.setRadius(10f);
+        light.setPosition(new Vector3f(0f, 3f, 0f));
+
+        rootNode.addLight(light);
 
 
 
@@ -52,20 +61,14 @@ public class App extends SimpleApplication {
 
         // table
         Table table =  new Table(2F, 4F, 0.1F, ColorRGBA.Blue);
-        Material matTable = new Material(assetManager,
-                "Common/MatDefs/Light/Lighting.j3md");  // create a simple materialmatTable.setColor("Color", table.getColor());
-            matTable.setBoolean("UseMaterialColors", true);
-            matTable.setColor("Diffuse", ColorRGBA.Blue);
-            matTable.setColor("Ambient", ColorRGBA.Blue);
+        Material matTable = LightManager.createMaterial(assetManager,ColorRGBA.Blue);
         Geometry tableGeometry = table.createGeometry();
         table.createPhysic(tableGeometry,bulletAppState);
         tableGeometry.setMaterial(matTable);
 
         // left side of the table
         Side leftSide = new Side(table, ColorRGBA.Brown);
-        Material matSide = new Material(assetManager,
-                "Common/MatDefs/Misc/Unshaded.j3md");  // create a simple material
-        matSide.setColor("Color", leftSide.getColor());
+        Material matSide = LightManager.createMaterial(assetManager,leftSide.getColor());
         Geometry leftSideGeometry = leftSide.createGeometryLeft();
         table.createPhysic(leftSideGeometry,bulletAppState);
         leftSideGeometry.setMaterial(matSide);
@@ -79,18 +82,14 @@ public class App extends SimpleApplication {
         // puck
         Puck puck = new Puck(20, 10, 0.4F, 0.2F, ColorRGBA.LightGray, table);
         puck.putOnMySide();
-        Material matPuck = new Material(assetManager,
-                "Common/MatDefs/Misc/Unshaded.j3md");  // create a simple material
-        matPuck.setColor("Color", puck.getColor());
+        Material matPuck = LightManager.createMaterial(assetManager,puck.getColor());
         Geometry puckGeometry = puck.createGeometry();
         puck.createPhysic(puckGeometry, bulletAppState);
         puckGeometry.setMaterial(matPuck);
 
         // my paddle
         Paddle myPaddle = new Paddle(0.4F, 0.2F, 0.1F, ColorRGBA.Gray);
-        Material matPaddle = new Material(assetManager,
-                "Common/MatDefs/Misc/Unshaded.j3md");  // create a simple material
-        matPaddle.setColor("Color", myPaddle.getColor());
+        Material matPaddle = LightManager.createMaterial(assetManager,myPaddle.getColor());
         Geometry paddleGeometry = myPaddle.createGeometryMy(table);
         myPaddle.createPhysic(paddleGeometry,bulletAppState);
         paddleGeometry.setMaterial(matPaddle);

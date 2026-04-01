@@ -1,7 +1,9 @@
 package fr.univtln.pierre.samples.modele;
 
+import com.jme3.asset.AssetManager;
 import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
+import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
@@ -21,5 +23,17 @@ public class LightManager {
         dl.setColor(ColorRGBA.White);
         dl.setDirection(new Vector3f(2.8f, -2.8f, -2.8f).normalizeLocal());
         rootNode.addLight(dl);
+    }
+
+
+    public static Material createMaterial(AssetManager assetManager, ColorRGBA color) {
+        Material mat = new Material(assetManager,
+                "Common/MatDefs/Light/Lighting.j3md");
+
+        mat.setBoolean("UseMaterialColors", true);
+        mat.setColor("Diffuse", color);
+        mat.setColor("Ambient", color);
+
+        return mat;
     }
 }
