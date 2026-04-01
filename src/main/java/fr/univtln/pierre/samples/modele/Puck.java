@@ -16,15 +16,18 @@ public class Puck {
     private int radialSamples; // Number of triangle samples along the radial.
     private float radius;
     private float height;
-    private Vector3f position = new Vector3f(0, 0.4F, 0);
+    private Vector3f position;
     private ColorRGBA color;
+    private Table table;
 
-    public Puck(int axisSamples, int radialSamples, float radius, float height, ColorRGBA color) {
+    public Puck(int axisSamples, int radialSamples, float radius, float height, ColorRGBA color, Table table) {
         this.axisSamples = axisSamples;
         this.radialSamples = radialSamples;
         this.radius = radius;
         this.height = height;
         this.color = color;
+        this.table = table;
+        this.position = table.getPosition().add(0, 2*height, 0);
     }
 
     public Geometry createGeometry(){
@@ -37,6 +40,18 @@ public class Puck {
         roll90x.fromAngleAxis(FastMath.PI/2, new Vector3f(1,0,0));
         puck.setLocalRotation(roll90x);
         return puck;
+    }
+
+    public void putOnMySide(){
+        position = table.getPosition().add(0, 2*height, table.getLenght()/2);
+    }
+
+    public void putOnOpponentSide(){
+        position = table.getPosition().add(0, 2*height, -table.getLenght()/2);
+    }
+
+    public void putOnCenter(){
+        this.position = table.getPosition().add(0, 2*height, 0);
     }
 
 }

@@ -27,7 +27,7 @@ public class App extends SimpleApplication {
         rootNode.attachChild(pivot); // put this node in the scene
 
         // table
-        Table table =  new Table(2F, 4F, 0.1F, ColorRGBA.Yellow);
+        Table table =  new Table(2F, 4F, 0.1F, ColorRGBA.Blue);
         Material matTable = new Material(assetManager,
                 "Common/MatDefs/Misc/Unshaded.j3md");  // create a simple material
         matTable.setColor("Color", table.getColor());
@@ -48,7 +48,8 @@ public class App extends SimpleApplication {
         rightSideGeometry.setMaterial(matSide);
 
         // puck
-        Puck puck = new Puck(20, 10, 0.4F, 0.2F, ColorRGBA.LightGray);
+        Puck puck = new Puck(20, 10, 0.4F, 0.2F, ColorRGBA.LightGray, table);
+        puck.putOnMySide();
         Material matPuck = new Material(assetManager,
                 "Common/MatDefs/Misc/Unshaded.j3md");  // create a simple material
         matPuck.setColor("Color", puck.getColor());
