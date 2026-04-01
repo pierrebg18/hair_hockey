@@ -15,12 +15,13 @@ import fr.univtln.pierre.samples.modele.Paddle;
 import fr.univtln.pierre.samples.modele.Puck;
 import fr.univtln.pierre.samples.modele.Side;
 import fr.univtln.pierre.samples.modele.Table;
+import fr.univtln.pierre.samples.game.Move;
 
 public class App extends SimpleApplication {
 
         private BulletAppState bulletAppState;
-        private InputManager inputManager;
-
+        //private InputManager inputManager;
+        private Move move;
 
         public static void main(String[] args){
         App app = new App();
@@ -32,8 +33,12 @@ public class App extends SimpleApplication {
         }
 
 
+
         public App(){
         }
+
+
+
 
 
 
@@ -41,12 +46,12 @@ public class App extends SimpleApplication {
         public void simpleInitApp() {
         Node pivot = new Node("pivot");
         rootNode.attachChild(pivot); // put this node in the scene
-        
+        move = new Move();
+        move.setUpKeys(inputManager);
         
 
         bulletAppState = new BulletAppState();
         stateManager.attach(bulletAppState);
-
 
 
         // table
@@ -91,6 +96,8 @@ public class App extends SimpleApplication {
         Geometry paddleGeometry = myPaddle.createGeometryMy(table);
         myPaddle.createPhysic(paddleGeometry,bulletAppState);
         paddleGeometry.setMaterial(matPaddle);
+        move.setpaddle(myPaddle);
+        move.setpaddlegeo(paddleGeometry);
 
         // opponent's paddle
         Paddle opponentPaddle = new Paddle(0.4F, 0.2F, 0.1F, ColorRGBA.Gray);
@@ -104,5 +111,12 @@ public class App extends SimpleApplication {
         pivot.attachChild(puckGeometry);
         pivot.attachChild(paddleGeometry);
         pivot.attachChild(opponentPaddleGeometry);
+        }
+
+        @Override
+        public void simpleUpdate(float tpf) {
+                move.simpleUpdateMove(tpf);
+                
+                
         }
 }
