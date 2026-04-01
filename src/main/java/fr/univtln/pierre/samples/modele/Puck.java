@@ -1,5 +1,8 @@
 package fr.univtln.pierre.samples.modele;
 
+import com.jme3.bullet.control.RigidBodyControl;
+import com.jme3.app.SimpleApplication;
+import com.jme3.bullet.BulletAppState;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
@@ -39,4 +42,10 @@ public class Puck {
         return puck;
     }
 
+    public RigidBodyControl createPhysic(Geometry puck_geo,BulletAppState bulletAppState){
+        RigidBodyControl puck_phy = new RigidBodyControl(5.0f);
+        puck_geo.addControl(puck_phy);
+        bulletAppState.getPhysicsSpace().add(puck_phy);
+        return puck_phy;
+    }
 }

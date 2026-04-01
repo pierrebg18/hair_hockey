@@ -1,6 +1,9 @@
 package fr.univtln.pierre.samples;
 
+import com.bulletphysics.dynamics.RigidBody;
 import com.jme3.app.SimpleApplication;
+import com.jme3.bullet.BulletAppState;
+import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.scene.Geometry;
@@ -12,19 +15,26 @@ import fr.univtln.pierre.samples.modele.Table;
 
 public class App extends SimpleApplication {
 
-    public static void main(String[] args){
+        private BulletAppState bulletAppState;
+
+        public static void main(String[] args){
         App app = new App();
         app.start();
-    }
+        }
 
 
-    public App(){
-    }
+        public App(){
+        }
 
-    @Override
-    public void simpleInitApp() {
+        @Override
+        public void simpleInitApp() {
         Node pivot = new Node("pivot");
         rootNode.attachChild(pivot); // put this node in the scene
+
+        bulletAppState = new BulletAppState();
+        stateManager.attach(bulletAppState);
+
+
 
         // table
         Table table =  new Table(2F, 4F, 0.1F, ColorRGBA.Yellow);
@@ -53,6 +63,7 @@ public class App extends SimpleApplication {
                 "Common/MatDefs/Misc/Unshaded.j3md");  // create a simple material
         matPuck.setColor("Color", puck.getColor());
         Geometry puckGeometry = puck.createGeometry();
+        RigidBodyControl puck_phy = puck.createPhysic(puckGeometry, bulletAppState);
         puckGeometry.setMaterial(matPuck);
 
         // my paddle
@@ -74,5 +85,5 @@ public class App extends SimpleApplication {
         pivot.attachChild(puckGeometry);
         pivot.attachChild(paddleGeometry);
         pivot.attachChild(opponentPaddleGeometry);
-    }
+        }
 }
