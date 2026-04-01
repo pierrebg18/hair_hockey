@@ -43,7 +43,7 @@ public class Paddle {
     }
 
     public void createPhysic(Geometry paddle_geo,BulletAppState bulletAppState){
-        this.paddle_phy = new RigidBodyControl(100.0f);
+        this.paddle_phy = new RigidBodyControl(5.0f);
         paddle_geo.addControl(paddle_phy);
         bulletAppState.getPhysicsSpace().add(paddle_phy);
     }

@@ -47,7 +47,7 @@ public class Puck {
     }
 
     public void createPhysic(Geometry puck_geo,BulletAppState bulletAppState){
-        puck_phy = new RigidBodyControl(10.0f);
+        puck_phy = new RigidBodyControl(5.0f);
         puck_geo.addControl(puck_phy);
         bulletAppState.getPhysicsSpace().add(puck_phy);
     }
