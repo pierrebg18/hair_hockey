@@ -5,10 +5,10 @@ import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
-import fr.univtln.pierre.samples.object3d.Paddle;
-import fr.univtln.pierre.samples.object3d.Puck;
-import fr.univtln.pierre.samples.object3d.Side;
-import fr.univtln.pierre.samples.object3d.Table;
+import fr.univtln.pierre.samples.modele.Paddle;
+import fr.univtln.pierre.samples.modele.Puck;
+import fr.univtln.pierre.samples.modele.Side;
+import fr.univtln.pierre.samples.modele.Table;
 
 public class App extends SimpleApplication {
 
