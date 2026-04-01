@@ -1,6 +1,5 @@
 package fr.univtln.pierre.samples;
 
-import com.bulletphysics.dynamics.RigidBody;
 import com.jme3.app.SimpleApplication;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.control.RigidBodyControl;
@@ -13,6 +12,7 @@ import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
+import com.jme3.scene.Spatial;
 import com.jme3.system.AppSettings;
 
 import fr.univtln.pierre.samples.modele.Paddle;
@@ -38,7 +38,7 @@ public class App extends SimpleApplication {
 
     @Override
     public void simpleInitApp() {
-        placeCameraUp();
+        placeCameraOpponentSide();
         Node pivot = new Node("pivot");
         rootNode.attachChild(pivot); // put this node in the scene
 
@@ -102,12 +102,26 @@ public class App extends SimpleApplication {
         opponentPaddleGeometry.setMaterial(matPaddle);
         opponentPaddle.createPhysic(opponentPaddleGeometry,bulletAppState);
 
+        // me
+        Spatial me = assetManager.loadModel("person/source/model/model_mesh.obj");
+        me.scale(4f, 4f, 4f);
+        me.rotate(0.0f, -3.0f, 0.0f);
+        me.setLocalTranslation(0.0f, 0.0f, table.getLenght()+2f);
+
+        // opponent
+        Spatial opponent = assetManager.loadModel("person2/source/model/model_mesh.obj");
+        opponent.scale(4f, 4f, 4f);
+        //opponent.rotate(0.0f, 1.5f, 0.0f);
+        opponent.setLocalTranslation(0.0f, 0.0f, -table.getLenght()-2f);
+
         pivot.attachChild(tableGeometry);
         pivot.attachChild(leftSideGeometry);
         pivot.attachChild(rightSideGeometry);
         pivot.attachChild(puckGeometry);
         pivot.attachChild(paddleGeometry);
         pivot.attachChild(opponentPaddleGeometry);
+        pivot.attachChild(me);
+        pivot.attachChild(opponent);
     }
 
     public void placeCameraPlayerSide(){
