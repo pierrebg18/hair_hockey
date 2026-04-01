@@ -43,13 +43,11 @@ public class App extends SimpleApplication {
 
         //light
         //LightManager.setUpLight(rootNode);
-
-        PointLight light = new PointLight();
-        light.setColor(ColorRGBA.White.mult(2f));
-        light.setRadius(10f);
-        light.setPosition(new Vector3f(0f, 3f, 0f));
-
-        rootNode.addLight(light);
+        ColorRGBA blancChaud = new ColorRGBA(1f, 0.9f, 0.7f, 1f);
+        ColorRGBA blancBienChaud = new ColorRGBA(1f, 0.85f, 0.6f, 1f);
+        ColorRGBA ultraChaud = new ColorRGBA(1f, 0.75f, 0.45f, 1f);
+        //LightManager.addLight(rootNode,new Vector3f(0f, 3f, 0f), ColorRGBA.Orange, 2f, 10f);
+        LightManager.addLight(rootNode,new Vector3f(0f, 3f, 0f), ultraChaud, 2f, 10f);
 
 
 

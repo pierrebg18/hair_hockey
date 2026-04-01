@@ -3,6 +3,7 @@ package fr.univtln.pierre.samples.modele;
 import com.jme3.asset.AssetManager;
 import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
+import com.jme3.light.PointLight;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
@@ -34,6 +35,19 @@ public class LightManager {
         mat.setColor("Diffuse", color);
         mat.setColor("Ambient", color);
 
+        //tentative d'amélioration
+        mat.setColor("Specular", ColorRGBA.White);
+        mat.setFloat("Shininess", 32f);
+
         return mat;
+    }
+
+    public static void addLight(Node rootNode,Vector3f position, ColorRGBA color, float intensity, float radius) {
+        PointLight light = new PointLight();
+        light.setColor(color.mult(intensity));
+        light.setRadius(radius);
+        light.setPosition(position);
+
+        rootNode.addLight(light);
     }
 }
