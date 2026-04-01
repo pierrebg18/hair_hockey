@@ -6,6 +6,9 @@ import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
+import com.jme3.math.FastMath;
+import com.jme3.math.Quaternion;
+import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.system.AppSettings;
@@ -17,23 +20,23 @@ import fr.univtln.pierre.samples.modele.Table;
 
 public class App extends SimpleApplication {
 
-        private BulletAppState bulletAppState;
+    private BulletAppState bulletAppState;
 
-        public static void main(String[] args){
+    public static void main(String[] args){
         App app = new App();
         AppSettings settings = new AppSettings(true);
         settings.setResolution(1280, 720);
         settings.setTitle("Hair Hockey");
         app.setSettings(settings);
         app.start();
-        }
+    }
 
+    public App(){
+    }
 
-        public App(){
-        }
-
-        @Override
-        public void simpleInitApp() {
+    @Override
+    public void simpleInitApp() {
+        placeCameraUp();
         Node pivot = new Node("pivot");
         rootNode.attachChild(pivot); // put this node in the scene
 
@@ -97,5 +100,25 @@ public class App extends SimpleApplication {
         pivot.attachChild(puckGeometry);
         pivot.attachChild(paddleGeometry);
         pivot.attachChild(opponentPaddleGeometry);
-        }
+    }
+
+    public void placeCameraPlayerSide(){
+        cam.setLocation(new Vector3f(0, 4f, 9f));
+        cam.lookAt(new Vector3f(0, 0, 0), new Vector3f(0, 1, 1));
+    }
+
+    public void placeCameraOpponentSide(){
+        cam.setLocation(new Vector3f(0, 4f, -9f));
+        cam.lookAt(new Vector3f(0, 0, 0), new Vector3f(0, 1, 1));
+    }
+
+    // rotation to adjust by 180-degree rotation around table
+    public void placeCameraUp(){
+        cam.setLocation(new Vector3f(0, 12f, 0f));
+        cam.lookAt(new Vector3f(0, 0, 0), new Vector3f(0, -1, 0));
+        Quaternion roll90x = new Quaternion();
+        roll90x.fromAngleAxis(FastMath.PI/2, new Vector3f(1,0,0));
+        cam.setRotation(roll90x);
+    }
+
 }
