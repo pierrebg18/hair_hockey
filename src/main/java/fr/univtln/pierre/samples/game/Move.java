@@ -30,10 +30,10 @@ public class Move implements ActionListener{
     }
 
     public void setUpKeys(InputManager inputManager) {
-        inputManager.addMapping("Left", new KeyTrigger(KeyInput.KEY_Q));
-        inputManager.addMapping("Right", new KeyTrigger(KeyInput.KEY_D));
-        inputManager.addMapping("Up", new KeyTrigger(KeyInput.KEY_Z));
-        inputManager.addMapping("Down", new KeyTrigger(KeyInput.KEY_S));
+        inputManager.addMapping("Left", new KeyTrigger(KeyInput.KEY_J));
+        inputManager.addMapping("Right", new KeyTrigger(KeyInput.KEY_L));
+        inputManager.addMapping("Up", new KeyTrigger(KeyInput.KEY_I));
+        inputManager.addMapping("Down", new KeyTrigger(KeyInput.KEY_K));
         inputManager.addListener(this, "Left");
         inputManager.addListener(this, "Right");
         inputManager.addListener(this, "Up");
@@ -65,26 +65,26 @@ public class Move implements ActionListener{
 
     public void simpleUpdateMove(float tpf) {
         Vector3f pos = paddle.getposition();
-        float speed=5;
+        float speed=0.00f ;
         if (left) {
             Vector3f pos_final = new Vector3f(pos.x,pos.y,pos.z+speed);
             paddle.setposition(pos_final);
-            paddle_geo.move(pos_final);
+            paddle_geo.move(-0.1f, 0f, 0f);
         }
         if (right) {
             Vector3f pos_final = new Vector3f(pos.x,pos.y,pos.z-speed);
             paddle.setposition(pos_final);
-            paddle_geo.move(pos_final);
+            paddle_geo.move(0.1f, 0f, 0f);
         }
         if (up) {
             Vector3f pos_final = new Vector3f(pos.x+speed,pos.y,pos.z);
             paddle.setposition(pos_final);
-            paddle_geo.move(pos_final);
+            paddle_geo.move(0f,0f, -0.1f);
         }
         if (down) {
             Vector3f pos_final = new Vector3f(pos.x-speed,pos.y,pos.z);
             paddle.setposition(pos_final);
-            paddle_geo.move(pos_final);
+            paddle_geo.move(0f,0f, 0.1f);
         }
     }
     
