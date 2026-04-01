@@ -37,7 +37,7 @@ public class LightManager {
 
         //tentative d'amélioration
         mat.setColor("Specular", ColorRGBA.White);
-        mat.setFloat("Shininess", 32f);
+        mat.setFloat("Shininess", 16f);
 
         return mat;
     }

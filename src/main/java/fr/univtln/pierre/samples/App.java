@@ -38,8 +38,6 @@ public class App extends SimpleApplication {
 
     @Override
     public void simpleInitApp() {
-    @Override
-    public void simpleInitApp() {
         placeCameraUp();
         Node pivot = new Node("pivot");
         rootNode.attachChild(pivot); // put this node in the scene
