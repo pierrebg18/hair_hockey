@@ -14,39 +14,49 @@ import fr.univtln.pierre.samples.modele.Paddle;
 import fr.univtln.pierre.samples.modele.Puck;
 import fr.univtln.pierre.samples.modele.Side;
 import fr.univtln.pierre.samples.modele.Table;
-
+import fr.univtln.pierre.samples.modele.LightManager;
 public class App extends SimpleApplication {
 
-        private BulletAppState bulletAppState;
+    private BulletAppState bulletAppState;
 
-        public static void main(String[] args){
+    public static void main(String[] args){
         App app = new App();
         AppSettings settings = new AppSettings(true);
         settings.setResolution(1280, 720);
         settings.setTitle("Hair Hockey");
         app.setSettings(settings);
         app.start();
-        }
+    }
 
 
-        public App(){
-        }
+    public App(){}
 
-        @Override
-        public void simpleInitApp() {
+    @Override
+    public void simpleInitApp() {
         Node pivot = new Node("pivot");
         rootNode.attachChild(pivot); // put this node in the scene
 
         bulletAppState = new BulletAppState();
         stateManager.attach(bulletAppState);
 
+        //light
+        LightManager.setUpLight(rootNode);
+
+
+
+
+
+
+
 
 
         // table
         Table table =  new Table(2F, 4F, 0.1F, ColorRGBA.Blue);
         Material matTable = new Material(assetManager,
-                "Common/MatDefs/Misc/Unshaded.j3md");  // create a simple material
-        matTable.setColor("Color", table.getColor());
+                "Common/MatDefs/Light/Lighting.j3md");  // create a simple materialmatTable.setColor("Color", table.getColor());
+            matTable.setBoolean("UseMaterialColors", true);
+            matTable.setColor("Diffuse", ColorRGBA.Blue);
+            matTable.setColor("Ambient", ColorRGBA.Blue);
         Geometry tableGeometry = table.createGeometry();
         table.createPhysic(tableGeometry,bulletAppState);
         tableGeometry.setMaterial(matTable);
@@ -97,5 +107,5 @@ public class App extends SimpleApplication {
         pivot.attachChild(puckGeometry);
         pivot.attachChild(paddleGeometry);
         pivot.attachChild(opponentPaddleGeometry);
-        }
+    }
 }
