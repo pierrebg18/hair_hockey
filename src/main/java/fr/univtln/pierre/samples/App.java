@@ -26,9 +26,8 @@ import fr.univtln.pierre.samples.game.Move;
 public class App extends SimpleApplication {
 
     private BulletAppState bulletAppState;
-        private BulletAppState bulletAppState;
-        //private InputManager inputManager;
-        private Move move;
+    //private InputManager inputManager;
+    private Move move;
 
     public static void main(String[] args){
         App app = new App();
@@ -153,10 +152,8 @@ public class App extends SimpleApplication {
         cam.setRotation(roll90x);
     }
 
-        }
-
-        @Override
-        public void simpleUpdate(float tpf) {
-                move.simpleUpdateMove(tpf);
-        }
+    @Override
+    public void simpleUpdate(float tpf) {
+        move.simpleUpdateMove(tpf);
+    }
 }
