@@ -16,11 +16,7 @@ import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.system.AppSettings;
 
-import fr.univtln.pierre.samples.modele.Paddle;
-import fr.univtln.pierre.samples.modele.Puck;
-import fr.univtln.pierre.samples.modele.Side;
-import fr.univtln.pierre.samples.modele.Table;
-import fr.univtln.pierre.samples.modele.LightManager;
+import fr.univtln.pierre.samples.modele.*;
 import fr.univtln.pierre.samples.game.Move;
 
 public class App extends SimpleApplication {
@@ -43,7 +39,7 @@ public class App extends SimpleApplication {
 
     @Override
     public void simpleInitApp() {
-        placeCameraOpponentSide();
+        placeCameraMySide();
         Node pivot = new Node("pivot");
         rootNode.attachChild(pivot); // put this node in the scene
         move = new Move();
@@ -70,26 +66,33 @@ public class App extends SimpleApplication {
 
         // table
         Table table =  new Table(2F, 4F, 0.1F, ColorRGBA.Blue);
-        Material matTable = LightManager.createMaterial(assetManager,ColorRGBA.Blue);
+        Material matTable = LightManager.createMaterial(assetManager, table.getColor());
         Geometry tableGeometry = table.createGeometry();
         table.createPhysic(tableGeometry,bulletAppState);
         tableGeometry.setMaterial(matTable);
 
         // left side of the table
         Side leftSide = new Side(table, ColorRGBA.Brown);
-        Material matSide = LightManager.createMaterial(assetManager,leftSide.getColor());
+        Material matSide = LightManager.createMaterial(assetManager, leftSide.getColor());
         Geometry leftSideGeometry = leftSide.createGeometryLeft();
-        table.createPhysic(leftSideGeometry,bulletAppState);
+        leftSide.createPhysic(leftSideGeometry, bulletAppState);
         leftSideGeometry.setMaterial(matSide);
 
         // right side of the table
         Side rightSide = new Side(table, ColorRGBA.Brown);
         Geometry rightSideGeometry = rightSide.createGeometryRight();
-        table.createPhysic(rightSideGeometry,bulletAppState);
+        rightSide.createPhysic(rightSideGeometry, bulletAppState);
         rightSideGeometry.setMaterial(matSide);
 
+        // table base
+        TableBase tableBase =  new TableBase(table, leftSide, 2F, ColorRGBA.Brown);
+        Material matBase = LightManager.createMaterial(assetManager, tableBase.getColor());
+        Geometry tableBaseGeometry = table.createGeometry();
+        tableBase.createPhysic(tableGeometry, bulletAppState);
+        tableBaseGeometry.setMaterial(matBase);
+
         // puck
-        Puck puck = new Puck(20, 10, 0.4F, 0.2F, ColorRGBA.LightGray, table);
+        Puck puck = new Puck(20, 10, 0.3F, 0.15F, ColorRGBA.LightGray, table);
         puck.putOnMySide();
         Material matPuck = LightManager.createMaterial(assetManager,puck.getColor());
         Geometry puckGeometry = puck.createGeometry();
@@ -103,7 +106,6 @@ public class App extends SimpleApplication {
         myPaddle.createPhysic(paddleGeometry,bulletAppState);
         paddleGeometry.setMaterial(matPaddle);
         move.setpaddle(myPaddle);
-        move.setpaddlegeo(paddleGeometry);
 
         // opponent's paddle
         Paddle opponentPaddle = new Paddle(0.4F, 0.2F, 0.1F, ColorRGBA.Gray);
@@ -111,6 +113,8 @@ public class App extends SimpleApplication {
         opponentPaddleGeometry.setMaterial(matPaddle);
         opponentPaddle.createPhysic(opponentPaddleGeometry,bulletAppState);
 
+        // persons figures
+        /*
         // me
         Spatial me = assetManager.loadModel("person/source/model/model_mesh.obj");
         me.scale(4f, 4f, 4f);
@@ -122,18 +126,20 @@ public class App extends SimpleApplication {
         opponent.scale(4f, 4f, 4f);
         //opponent.rotate(0.0f, 1.5f, 0.0f);
         opponent.setLocalTranslation(0.0f, 0.0f, -table.getLenght()-2f);
+         */
 
         pivot.attachChild(tableGeometry);
         pivot.attachChild(leftSideGeometry);
         pivot.attachChild(rightSideGeometry);
+        //pivot.attachChild(tableBaseGeometry);
         pivot.attachChild(puckGeometry);
         pivot.attachChild(paddleGeometry);
         pivot.attachChild(opponentPaddleGeometry);
-        pivot.attachChild(me);
-        pivot.attachChild(opponent);
+        //pivot.attachChild(me);
+        //pivot.attachChild(opponent);
     }
 
-    public void placeCameraPlayerSide(){
+    public void placeCameraMySide(){
         cam.setLocation(new Vector3f(0, 4f, 9f));
         cam.lookAt(new Vector3f(0, 0, 0), new Vector3f(0, 1, 1));
     }

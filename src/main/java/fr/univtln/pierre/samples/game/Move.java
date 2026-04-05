@@ -16,17 +16,12 @@ public class Move implements ActionListener{
      * ajouter la marche et le saut contrôlés par la physique : */
     private boolean left = false, right = false, up = false, down = false;
     private Paddle paddle;
-    private Geometry paddle_geo;
 
     public Move(){
     }
 
     public void setpaddle(Paddle paddle){
         this.paddle=paddle;
-    }
-
-    public void setpaddlegeo(Geometry paddle_geo){
-        this.paddle_geo=paddle_geo;
     }
 
     public void setUpKeys(InputManager inputManager) {
@@ -64,23 +59,21 @@ public class Move implements ActionListener{
      */
 
     public void simpleUpdateMove(float tpf) {
-        Vector3f pos = paddle.getposition();
-        float speed = 2f*tpf ;
-        Vector3f pos_final = new Vector3f(pos);
+        float speed = 3f ;
+        Vector3f velocity = new Vector3f(0, 0, 0);
         if (left) {
-            pos_final = new Vector3f(pos.x-speed,pos.y,pos.z);
+            velocity.x -= speed;
         }
         if (right) {
-            pos_final = new Vector3f(pos.x+speed,pos.y,pos.z);
+            velocity.x += speed;
         }
         if (up) {
-            pos_final = new Vector3f(pos.x,pos.y,pos.z-speed);
+            velocity.z -= speed;
         }
         if (down) {
-            pos_final = new Vector3f(pos.x,pos.y,pos.z+speed);
+            velocity.z += speed;
         }
-        paddle.setposition(pos_final);
-        paddle.getPaddle_phy().setPhysicsLocation(pos_final);
+        paddle.getPaddle_phy().setLinearVelocity(velocity);
     }
     
 }
