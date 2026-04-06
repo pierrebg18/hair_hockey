@@ -67,4 +67,18 @@ public class Puck {
         this.position = table.getPosition().add(0, 2*height, 0);
     }
 
+    public Vector3f getposition(){
+        return this.position;
+    }
+
+
+    public void setposition(Vector3f vector3f){
+        this.position=vector3f;
+    }
+
+    //permet de savoir si un objet a bouge sur l'axe x et z
+    public boolean hasMoved(Vector3f lastCoord){
+        Vector3f currentCoord = this.puck_phy.getPhysicsLocation();
+        return Math.abs(lastCoord.x - currentCoord.x) > 0.001f || Math.abs(lastCoord.z - currentCoord.z) > 0.1f;
+    }
 }

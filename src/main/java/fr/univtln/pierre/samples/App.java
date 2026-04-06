@@ -17,6 +17,7 @@ import com.jme3.scene.Spatial;
 import com.jme3.system.AppSettings;
 
 import fr.univtln.pierre.samples.modele.*;
+import fr.univtln.pierre.samples.game.Ia;
 import fr.univtln.pierre.samples.game.Move;
 
 public class App extends SimpleApplication {
@@ -24,6 +25,9 @@ public class App extends SimpleApplication {
     private BulletAppState bulletAppState;
     //private InputManager inputManager;
     private Move move;
+    private Ia ia;
+    private Vector3f Last_position;
+    private Puck puck;
 
     public static void main(String[] args){
         App app = new App();
@@ -44,6 +48,7 @@ public class App extends SimpleApplication {
         rootNode.attachChild(pivot); // put this node in the scene
         move = new Move();
         move.setUpKeys(inputManager);
+        ia = new Ia();
 
 
         bulletAppState = new BulletAppState();
@@ -98,6 +103,8 @@ public class App extends SimpleApplication {
         Geometry puckGeometry = puck.createGeometry();
         puck.createPhysic(puckGeometry, bulletAppState);
         puckGeometry.setMaterial(matPuck);
+        ia.setPuck(puck);
+        this.puck = puck;
 
         // my paddle
         Paddle myPaddle = new Paddle(0.4F, 0.2F, 0.1F, ColorRGBA.Gray);
@@ -112,7 +119,7 @@ public class App extends SimpleApplication {
         Geometry opponentPaddleGeometry = opponentPaddle.createGeometryOpponent(table);
         opponentPaddleGeometry.setMaterial(matPaddle);
         opponentPaddle.createPhysic(opponentPaddleGeometry,bulletAppState);
-
+        ia.setPaddle(opponentPaddle);
         // persons figures
         /*
         // me
@@ -137,6 +144,9 @@ public class App extends SimpleApplication {
         pivot.attachChild(opponentPaddleGeometry);
         //pivot.attachChild(me);
         //pivot.attachChild(opponent);
+
+        //permet de gérer l'ia
+        Last_position = ia.getPuck().getPuck_phy().getPhysicsLocation().clone();
     }
 
     public void placeCameraMySide(){
@@ -158,8 +168,12 @@ public class App extends SimpleApplication {
         cam.setRotation(roll90x);
     }
 
+    
+    
     @Override
     public void simpleUpdate(float tpf) {
         move.simpleUpdateMove(tpf);
+        ia.simpleUpdateIaMove(tpf,this.Last_position);
+        this.Last_position = puck.getPuck_phy().getPhysicsLocation().clone();
     }
 }

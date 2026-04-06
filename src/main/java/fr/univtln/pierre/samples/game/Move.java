@@ -74,6 +74,11 @@ public class Move implements ActionListener{
             velocity.z += speed;
         }
         paddle.getPaddle_phy().setLinearVelocity(velocity);
+        // clone() crée une copie indépendante de la position physique
+        paddle.setposition(paddle.getPaddle_phy().getPhysicsLocation().clone());
+        
+
+        //System.out.println(paddle.getposition());
     }
     
 }
