@@ -35,7 +35,7 @@ public class InvisibleWall {
     }
 
     public void createPhysicMySide(BulletAppState bulletAppState){
-        position = table.getPosition().add(0, height, table.getLenght()+thickness);
+        position = table.getPosition().add(0, height, table.getLenght()+2*thickness);
         wall_phy = new RigidBodyControl(wallShape, 0f);
         wall_phy.setPhysicsLocation(position);
         bulletAppState.getPhysicsSpace().add(wall_phy);

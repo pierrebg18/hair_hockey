@@ -45,6 +45,7 @@ public class Paddle {
     public void createPhysic(Geometry paddle_geo, BulletAppState bulletAppState){
         this.paddle_phy = new RigidBodyControl(500f);
         paddle_geo.addControl(paddle_phy);
+        paddle_phy.setAngularFactor(0f); // to block rotation
         bulletAppState.getPhysicsSpace().add(paddle_phy);
     }
 
