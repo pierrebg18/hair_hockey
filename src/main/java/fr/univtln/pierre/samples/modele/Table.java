@@ -17,8 +17,8 @@ public class Table {
     private float thickness;
     private ColorRGBA color;
     private Vector3f position = new Vector3f(0, 0, 0);
-    CollisionShape tableShape;
-    RigidBodyControl table_phy;
+    private CollisionShape tableShape;
+    private RigidBodyControl table_phy;
 
     public Table(float width, float length, float thickness, ColorRGBA color) {
         this.width = width;

@@ -2,6 +2,8 @@ package fr.univtln.pierre.samples;
 
 import com.jme3.app.SimpleApplication;
 import com.jme3.bullet.BulletAppState;
+import com.jme3.bullet.collision.shapes.BoxCollisionShape;
+import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.light.PointLight;
 import com.jme3.input.InputManager;
@@ -111,7 +113,40 @@ public class App extends SimpleApplication {
         Paddle opponentPaddle = new Paddle(0.4F, 0.2F, 0.1F, ColorRGBA.Gray);
         Geometry opponentPaddleGeometry = opponentPaddle.createGeometryOpponent(table);
         opponentPaddleGeometry.setMaterial(matPaddle);
-        opponentPaddle.createPhysic(opponentPaddleGeometry,bulletAppState);
+        opponentPaddle.createPhysic(opponentPaddleGeometry, bulletAppState);
+
+        // collision groups to block each puddle in its zone
+
+        // invisible walls
+        InvisibleWall centerWall = new InvisibleWall(table);
+        centerWall.createPhysicCenter(bulletAppState);
+
+        InvisibleWall mySideWall = new InvisibleWall(table);
+        mySideWall.createPhysicMySide(bulletAppState);
+
+        InvisibleWall opponentSideWall = new InvisibleWall(table);
+        opponentSideWall.createPhysicOpponentSide(bulletAppState);
+
+        // collision groups (powers of 2)
+        int groupPaddle = 1;
+        int groupWall = 2;
+        int groupPuck = 4;
+
+        // definition of groups
+        myPaddle.getPaddle_phy().setCollisionGroup(groupPaddle);
+        opponentPaddle.getPaddle_phy().setCollisionGroup(groupPaddle);
+        centerWall.getWall_phy().setCollisionGroup(groupWall);
+        mySideWall.getWall_phy().setCollisionGroup(groupWall);
+        opponentSideWall.getWall_phy().setCollisionGroup(groupWall);
+        puck.getPuck_phy().setCollisionGroup(groupPuck);
+
+        // definition of collision interactions
+        myPaddle.getPaddle_phy().setCollideWithGroups(groupPuck | groupWall); // collision with invisible walls and puck
+        opponentPaddle.getPaddle_phy().setCollideWithGroups(groupPuck | groupWall); // the same as previous
+        centerWall.getWall_phy().setCollideWithGroups(groupPaddle); // collision with puddle, but not puck
+        mySideWall.getWall_phy().setCollideWithGroups(groupPaddle);
+        opponentSideWall.getWall_phy().setCollideWithGroups(groupPaddle);
+        puck.getPuck_phy().setCollideWithGroups(groupPaddle); // collision with puddle, but not with invisible walls
 
         // persons figures
         /*
@@ -127,6 +162,9 @@ public class App extends SimpleApplication {
         //opponent.rotate(0.0f, 1.5f, 0.0f);
         opponent.setLocalTranslation(0.0f, 0.0f, -table.getLenght()-2f);
          */
+
+        // to display collision shapes
+        // bulletAppState.setDebugEnabled(true);
 
         pivot.attachChild(tableGeometry);
         pivot.attachChild(leftSideGeometry);
