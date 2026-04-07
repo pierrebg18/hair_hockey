@@ -107,13 +107,14 @@ public class App extends SimpleApplication {
         Geometry paddleGeometry = myPaddle.createGeometryMy(table);
         myPaddle.createPhysic(paddleGeometry,bulletAppState);
         paddleGeometry.setMaterial(matPaddle);
-        move.setpaddle(myPaddle);
 
         // opponent's paddle
         Paddle opponentPaddle = new Paddle(0.4F, 0.2F, 0.1F, ColorRGBA.Gray);
         Geometry opponentPaddleGeometry = opponentPaddle.createGeometryOpponent(table);
         opponentPaddleGeometry.setMaterial(matPaddle);
         opponentPaddle.createPhysic(opponentPaddleGeometry, bulletAppState);
+
+        move.setpaddle(myPaddle, opponentPaddle, puck);
 
         // collision groups to block each puddle in its zone
 
@@ -199,5 +200,7 @@ public class App extends SimpleApplication {
     @Override
     public void simpleUpdate(float tpf) {
         move.simpleUpdateMove(tpf);
+        move.simpleUpdateMoveOpponent(tpf);
+        move.resetPuck();
     }
 }
