@@ -50,10 +50,17 @@ public class Puck {
     public void createPhysic(Geometry puck_geo, BulletAppState bulletAppState){
         puck_phy = new RigidBodyControl( 50f);
         puck_geo.addControl(puck_phy);
-        puck_phy.setRestitution(5f);
+        puck_phy.setRestitution(3f);
         puck_phy.setFriction(0f);
+
+        puck_phy.setCcdMotionThreshold(0.001f);
+        puck_phy.setCcdSweptSphereRadius(radius * 0.8f);
         bulletAppState.getPhysicsSpace().add(puck_phy);
     }
+
+
+
+
 
     public void putOnMySide(){
         position = table.getPosition().add(0, 2*height, 1.5f);
@@ -77,5 +84,33 @@ public class Puck {
     public boolean hasMoved(Vector3f lastCoord){
         Vector3f currentCoord = this.puck_phy.getPhysicsLocation();
         return Math.abs(lastCoord.x - currentCoord.x) > 0.001f || Math.abs(lastCoord.z - currentCoord.z) > 0.1f;
+    }
+
+
+    public static void pinPuckHeight( Puck puck, Float puckMaxHeight) {
+        Vector3f pos = puck.getPuck_phy().getPhysicsLocation();
+
+        if (pos.y > puckMaxHeight) {
+            pos.y = puckMaxHeight;
+            puck.getPuck_phy().setPhysicsLocation(pos);
+
+            Vector3f vel = puck.getPuck_phy().getLinearVelocity();
+            if (vel.y > 0f) {
+                vel.y = 0f;
+                puck.getPuck_phy().setLinearVelocity(vel);
+            }
+        }
+    }
+
+
+    public static void stabilizePuck(Puck puck) {
+        Vector3f angularVel = puck.getPuck_phy().getAngularVelocity();
+
+        // on garde éventuellement un peu de rotation sur Y,
+        // mais on supprime le basculement sur X et Z
+        angularVel.x = 0f;
+        angularVel.z = 0f;
+
+        puck.getPuck_phy().setAngularVelocity(angularVel);
     }
 }

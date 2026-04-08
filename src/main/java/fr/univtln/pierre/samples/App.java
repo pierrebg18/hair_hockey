@@ -30,8 +30,9 @@ import lombok.Setter;
 import fr.univtln.pierre.samples.game.Ia;
 import fr.univtln.pierre.samples.game.Move;
 
-@Getter
-@Setter
+import static fr.univtln.pierre.samples.modele.Puck.pinPuckHeight;
+import static fr.univtln.pierre.samples.modele.Puck.stabilizePuck;
+
 public class App extends SimpleApplication implements ActionListener {
 
     private BulletAppState bulletAppState;
@@ -43,7 +44,10 @@ public class App extends SimpleApplication implements ActionListener {
     //gestion des rounds
     private Puck puck;
     private Vector3f puckStartPosition;
-    private boolean ModeJeu = true;
+    private float puckMaxHeight;
+    private int player1Count = 0;
+    private int player2Count = 0;
+    private boolean ModeJeu = false;
 
     private fr.univtln.pierre.samples.ui.MainMenuUI mainMenuUI;
     private fr.univtln.pierre.samples.ui.GameHudUI gameHudUI;
@@ -132,6 +136,7 @@ public class App extends SimpleApplication implements ActionListener {
         ia.setPuck(puck);
         this.puck = puck;
         puckStartPosition = new Vector3f(0f, 0.2f, 0f);
+        puckMaxHeight = puckStartPosition.y + 0.05f;
 
         // my paddle
         Paddle myPaddle = new Paddle(0.4F, 0.2F, 0.1F, ColorRGBA.Gray);
@@ -263,6 +268,12 @@ public class App extends SimpleApplication implements ActionListener {
         puck.getPuck_phy().clearForces();
     }
 
+
+
+
+
+
+
     @Override
     public void simpleUpdate(float tpf) {
         //gestion des déplacement du joueur
@@ -282,6 +293,8 @@ public class App extends SimpleApplication implements ActionListener {
         if (ModeJeu){
         move.simpleUpdateMoveOpponent(tpf);
         }
+        Puck.pinPuckHeight(puck,puckMaxHeight);
+        Puck.stabilizePuck(puck);
         Rule.endRound(puck, puckStartPosition);
         UpdateScore();
     }
