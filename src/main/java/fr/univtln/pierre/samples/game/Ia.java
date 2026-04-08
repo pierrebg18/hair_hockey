@@ -77,6 +77,6 @@ public class Ia {
             paddle.setposition(paddle.getPaddle_phy().getPhysicsLocation().clone());
         }
 
-        puck.setposition(puck.getPuck_phy().getPhysicsLocation().clone());
+        puck.setPosition(puck.getPuck_phy().getPhysicsLocation().clone());
     }
 }
