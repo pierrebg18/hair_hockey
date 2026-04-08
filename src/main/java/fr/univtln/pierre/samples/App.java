@@ -18,6 +18,7 @@ import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.system.AppSettings;
 
+import fr.univtln.pierre.samples.game.Rule;
 import fr.univtln.pierre.samples.modele.*;
 import fr.univtln.pierre.samples.game.Move;
 
@@ -215,16 +216,7 @@ public class App extends SimpleApplication {
 
         move.simpleUpdateMove(tpf);
         move.simpleUpdateMoveOpponent(tpf);
-        move.resetPuck();
-        if (puck.getPuck_phy().getPhysicsLocation().y < -1f) {
-            if(puck.getPuck_phy().getPhysicsLocation().z < 1f){
-                player1Count +=1;
-                System.out.println("le joeur 1 à : "+player1Count+"pts");
-            } else {
-                player2Count +=1;
-                System.out.println("le joeur 2 à : "+player2Count+"pts");
-            }
-            resetPuck();
-        }
+        Rule.endRound(puck, player1Count, player2Count, puckStartPosition);
+
     }
 }

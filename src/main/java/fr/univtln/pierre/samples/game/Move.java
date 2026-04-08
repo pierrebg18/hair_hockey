@@ -108,13 +108,8 @@ public class Move implements ActionListener{
         opponentPaddle.getPaddle_phy().setLinearVelocity(velocity);
     }
 
-    public void resetPuck(){
-        if (puck.getPuck_phy().getPhysicsLocation().y < -0.5){
-            puck.putOnCenter();
-            puck.getPuck_phy().setPhysicsLocation(puck.getPosition());
-            // reset of velocity
-            puck.getPuck_phy().setLinearVelocity(Vector3f.ZERO);
-            puck.getPuck_phy().setAngularVelocity(Vector3f.ZERO);
-        }
-    }
+
+
+
+
 }
