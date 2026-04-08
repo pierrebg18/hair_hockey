@@ -119,13 +119,13 @@ public class App extends SimpleApplication {
         // collision groups to block each puddle in its zone
 
         // invisible walls
-        InvisibleWall centerWall = new InvisibleWall(table);
+        InvisibleWall centerWall = new InvisibleWall(table, 1.5f);
         centerWall.createPhysicCenter(bulletAppState);
 
-        InvisibleWall mySideWall = new InvisibleWall(table);
+        InvisibleWall mySideWall = new InvisibleWall(table, 0.1f);
         mySideWall.createPhysicMySide(bulletAppState);
 
-        InvisibleWall opponentSideWall = new InvisibleWall(table);
+        InvisibleWall opponentSideWall = new InvisibleWall(table, 0.1f);
         opponentSideWall.createPhysicOpponentSide(bulletAppState);
 
         // collision groups (powers of 2)
@@ -148,6 +148,14 @@ public class App extends SimpleApplication {
         mySideWall.getWall_phy().setCollideWithGroups(groupPaddle);
         opponentSideWall.getWall_phy().setCollideWithGroups(groupPaddle);
         puck.getPuck_phy().setCollideWithGroups(groupPaddle); // collision with puddle, but not with invisible walls
+
+        // test of bonus
+        Bonus bonus = new Bonus(0.2f, BonusType.PADDLE_MINUS, myPaddle, opponentPaddle, puck, table);
+        Material matBonus = LightManager.createMaterial(assetManager, bonus.getColor());
+        Geometry bonusGeometry = bonus.createGeometry();
+        //myPaddle.createPhysic(paddleGeometry,bulletAppState);
+        bonusGeometry.setMaterial(matBonus);
+
 
         // persons figures
         /*
@@ -174,6 +182,7 @@ public class App extends SimpleApplication {
         pivot.attachChild(puckGeometry);
         pivot.attachChild(paddleGeometry);
         pivot.attachChild(opponentPaddleGeometry);
+        pivot.attachChild(bonusGeometry);
         //pivot.attachChild(me);
         //pivot.attachChild(opponent);
     }

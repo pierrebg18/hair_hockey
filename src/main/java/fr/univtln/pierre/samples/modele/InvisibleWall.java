@@ -19,11 +19,11 @@ public class InvisibleWall {
     private RigidBodyControl wall_phy;
     private Table table;
 
-    public InvisibleWall(Table table) {
+    public InvisibleWall(Table table, float thickness) {
         this.table = table;
         this.width = table.getWidth();
-        this.thickness = 0.1f;
         this.height = 0.5f;
+        this.thickness = thickness;
         this.wallShape = new BoxCollisionShape(new Vector3f(width, height, thickness));
     }
 

@@ -56,15 +56,18 @@ public class Puck {
     }
 
     public void putOnMySide(){
-        position = table.getPosition().add(0, 2*height, table.getLenght()/2);
+        position = table.getPosition().add(0, 2*height, 1.5f);
     }
 
     public void putOnOpponentSide(){
-        position = table.getPosition().add(0, 2*height, -table.getLenght()/2);
+        position = table.getPosition().add(0, 2*height, -1.5f);
     }
 
+    /*
     public void putOnCenter(){
         this.position = table.getPosition().add(0, 2*height, 0);
     }
+
+     */
 
 }
