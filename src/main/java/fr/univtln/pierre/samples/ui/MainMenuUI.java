@@ -21,7 +21,7 @@ public class MainMenuUI {
 
         BitmapText title = new BitmapText(font);
         title.setSize(font.getCharSet().getRenderedSize() * 2.8f);
-        title.setText("AIR HOCKEY");
+        title.setText("HAIR HOCKEY");
         title.setColor(ColorRGBA.Cyan);
         title.setLocalTranslation(width / 2f - title.getLineWidth() / 2f, height - 80f, 0);
         app.getGuiNode().attachChild(title);
@@ -42,13 +42,13 @@ public class MainMenuUI {
 
         BitmapText users = new BitmapText(font);
         users.setSize(font.getCharSet().getRenderedSize());
-        users.setText("Utilisateurs : " + player1 + " VS " + player2);
+        users.setText("MODE : " + player1 + " VS " + player2);
         users.setColor(ColorRGBA.Orange);
         users.setLocalTranslation(width / 2f - users.getLineWidth() / 2f, height - 240f, 0);
         app.getGuiNode().attachChild(users);
 
         createMenuItem("[ JOUER ]", 0, selectedIndex, height - 340f);
-        createMenuItem("[ CHANGER UTILISATEURS ]", 1, selectedIndex, height - 400f);
+        createMenuItem("[ CHANGER MODE ]", 1, selectedIndex, height - 400f);
         createMenuItem("[ QUITTER ]", 2, selectedIndex, height - 460f);
 
         BitmapText footer = new BitmapText(font);

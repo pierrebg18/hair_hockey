@@ -41,7 +41,7 @@ public class App extends SimpleApplication implements ActionListener {
     private Vector3f puckStartPosition;
     private int player1Count = 0;
     private int player2Count = 0;
-    private boolean ModeJeu = false;
+    private boolean ModeJeu = true;
 
     private fr.univtln.pierre.samples.ui.MainMenuUI mainMenuUI;
     private fr.univtln.pierre.samples.ui.GameHudUI gameHudUI;
@@ -252,13 +252,16 @@ public class App extends SimpleApplication implements ActionListener {
 
 
 
+
+
+
     private void executeSelectedMenu() {
         switch (selectedMenuIndex) {
             case 0:
                 startGame();
                 break;
             case 1:
-                changePlayers();
+                changeMode();
                 break;
             case 2:
                 stop();
@@ -267,6 +270,9 @@ public class App extends SimpleApplication implements ActionListener {
                 break;
         }
     }
+
+
+
 
     public void placeCameraMySide(){
         cam.setLocation(new Vector3f(0, 4f, 9f));
@@ -316,6 +322,12 @@ public class App extends SimpleApplication implements ActionListener {
         Rule.endRound(puck, player1Count, player2Count, puckStartPosition);
     }
 
+
+
+
+
+
+
     public void showMenu() {
         guiNode.detachAllChildren();
         menuVisible = true;
@@ -334,13 +346,15 @@ public class App extends SimpleApplication implements ActionListener {
         showHud();
     }
 
-    public void changePlayers() {
+    public void changeMode() {
         if (player1Name.equals("Joueur 1")) {
             player1Name = "Yassine";
             player2Name = "Invité";
+            ModeJeu=false;
         } else {
             player1Name = "Joueur 1";
             player2Name = "Joueur 2";
+            ModeJeu=true;
         }
 
         if (menuVisible) {
@@ -397,7 +411,7 @@ public class App extends SimpleApplication implements ActionListener {
 
                 case "CHANGE_PLAYERS":
                     selectedMenuIndex = 1;
-                    changePlayers();
+                    changeMode();
                     break;
 
                 case "BACK_OR_QUIT":
@@ -418,7 +432,7 @@ public class App extends SimpleApplication implements ActionListener {
                     break;
 
                 case "CHANGE_PLAYERS":
-                    changePlayers();
+                    changeMode();
                     break;
 
                 case "BACK_OR_QUIT":
