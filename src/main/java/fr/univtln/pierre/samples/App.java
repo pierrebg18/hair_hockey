@@ -36,6 +36,7 @@ public class App extends SimpleApplication {
     private Vector3f puckStartPosition;
     private int player1Count = 0;
     private int player2Count = 0;
+    private boolean ModeJeu = true;
 
     public static void main(String[] args){
         App app = new App();
@@ -238,7 +239,10 @@ public class App extends SimpleApplication {
         }
 
         move.simpleUpdateMove(tpf);
+
+        if (ModeJeu){
         move.simpleUpdateMoveOpponent(tpf);
+        }
         Rule.endRound(puck, player1Count, player2Count, puckStartPosition);
     }
 }
