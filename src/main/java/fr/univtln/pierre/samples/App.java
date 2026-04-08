@@ -29,6 +29,8 @@ public class App extends SimpleApplication {
     //gestion des rounds
     private Puck puck;
     private Vector3f puckStartPosition;
+    private int player1Count = 0;
+    private int player2Count = 0;
 
     public static void main(String[] args){
         App app = new App();
@@ -212,6 +214,13 @@ public class App extends SimpleApplication {
 
         move.simpleUpdateMove(tpf);
         if (puck.getPuck_phy().getPhysicsLocation().y < -1f) {
+            if(puck.getPuck_phy().getPhysicsLocation().z < 1f){
+                player1Count +=1;
+                System.out.println("le joeur 1 à : "+player1Count+"pts");
+            } else {
+                player2Count +=1;
+                System.out.println("le joeur 2 à : "+player2Count+"pts");
+            }
             resetPuck();
         }
     }
