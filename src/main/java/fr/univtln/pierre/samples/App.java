@@ -26,6 +26,9 @@ public class App extends SimpleApplication {
     private BulletAppState bulletAppState;
     //private InputManager inputManager;
     private Move move;
+    //gestion des rounds
+    private Puck puck;
+    private Vector3f puckStartPosition;
 
     public static void main(String[] args){
         App app = new App();
@@ -94,12 +97,13 @@ public class App extends SimpleApplication {
         tableBaseGeometry.setMaterial(matBase);
 
         // puck
-        Puck puck = new Puck(20, 10, 0.3F, 0.15F, ColorRGBA.LightGray, table);
+        puck = new Puck(20, 10, 0.3F, 0.15F, ColorRGBA.LightGray, table);
         puck.putOnMySide();
         Material matPuck = LightManager.createMaterial(assetManager,puck.getColor());
         Geometry puckGeometry = puck.createGeometry();
         puck.createPhysic(puckGeometry, bulletAppState);
         puckGeometry.setMaterial(matPuck);
+        puckStartPosition = new Vector3f(0f, 0.2f, 0f);
 
         // my paddle
         Paddle myPaddle = new Paddle(0.4F, 0.2F, 0.1F, ColorRGBA.Gray);
@@ -196,8 +200,19 @@ public class App extends SimpleApplication {
         cam.setRotation(roll90x);
     }
 
+    private void resetPuck() {
+        puck.getPuck_phy().setLinearVelocity(Vector3f.ZERO);
+        puck.getPuck_phy().setAngularVelocity(Vector3f.ZERO);
+        puck.getPuck_phy().setPhysicsLocation(puckStartPosition.clone());
+        puck.getPuck_phy().clearForces();
+    }
+
     @Override
     public void simpleUpdate(float tpf) {
+
         move.simpleUpdateMove(tpf);
+        if (puck.getPuck_phy().getPhysicsLocation().y < -1f) {
+            resetPuck();
+        }
     }
 }
