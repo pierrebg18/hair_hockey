@@ -28,6 +28,7 @@ public class App extends SimpleApplication {
     private Ia ia;
     private Vector3f Last_position;
     private Puck puck;
+    private int compteurFrames;
 
     public static void main(String[] args){
         App app = new App();
@@ -169,11 +170,18 @@ public class App extends SimpleApplication {
     }
 
     
-    
     @Override
     public void simpleUpdate(float tpf) {
+        //gestion des déplacement du joueur
+        compteurFrames++;
         move.simpleUpdateMove(tpf);
+        //System.out.println(tpf);
+
+        if (compteurFrames>=20){ //temps de réaction
+        //gestion des déplacement de l'IA
         ia.simpleUpdateIaMove(tpf,this.Last_position);
         this.Last_position = puck.getPuck_phy().getPhysicsLocation().clone();
+        compteurFrames=0;
+        }
     }
 }
