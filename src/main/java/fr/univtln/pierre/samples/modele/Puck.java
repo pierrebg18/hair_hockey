@@ -70,14 +70,8 @@ public class Puck {
 
      */
 
-    public Vector3f getposition(){
-        return this.position;
-    }
 
 
-    public void setposition(Vector3f vector3f){
-        this.position=vector3f;
-    }
 
     //permet de savoir si un objet a bouge sur l'axe x et z
     public boolean hasMoved(Vector3f lastCoord){
