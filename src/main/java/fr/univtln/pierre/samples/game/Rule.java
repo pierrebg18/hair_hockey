@@ -4,16 +4,18 @@ import com.jme3.math.Vector3f;
 import fr.univtln.pierre.samples.modele.Puck;
 
 public class Rule {
+    public static int player1Count=0;
+    public static int player2Count=0;
+    
 
-
-    public static void endRound(Puck puck, int player1Count, int  player2Count, Vector3f puckStartPosition){
+    public static void endRound(Puck puck, Vector3f puckStartPosition){
         if (puck.getPuck_phy().getPhysicsLocation().y < -1f) {
             if(puck.getPuck_phy().getPhysicsLocation().z < 1f){
                 player1Count +=1;
-                System.out.println("le joeur 1 à : "+player1Count+"pts");
+                System.out.println("le joueur 1 à : "+player1Count+"pts");
             } else {
                 player2Count +=1;
-                System.out.println("le joeur 2 à : "+player2Count+"pts");
+                System.out.println("le joueur 2 à : "+player2Count+"pts");
             }
             resetPuck(puck, puckStartPosition);
         }

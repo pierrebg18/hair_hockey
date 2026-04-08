@@ -47,11 +47,6 @@ public class GameHudUI {
         score.setLocalTranslation(width / 2f - score.getLineWidth() / 2f, height - 70f, 0);
         app.getGuiNode().attachChild(score);
 
-        BitmapText help = new BitmapText(font);
-        help.setSize(font.getCharSet().getRenderedSize());
-        help.setText("[A] +1 gauche   [P] +1 droite   [ECHAP] menu");
-        help.setColor(ColorRGBA.LightGray);
-        help.setLocalTranslation(width / 2f - help.getLineWidth() / 2f, 60f, 0);
-        app.getGuiNode().attachChild(help);
+
     }
 }

@@ -25,9 +25,13 @@ import com.jme3.input.controls.KeyTrigger;
 
 import fr.univtln.pierre.samples.game.Rule;
 import fr.univtln.pierre.samples.modele.*;
+import lombok.Getter;
+import lombok.Setter;
 import fr.univtln.pierre.samples.game.Ia;
 import fr.univtln.pierre.samples.game.Move;
 
+@Getter
+@Setter
 public class App extends SimpleApplication implements ActionListener {
 
     private BulletAppState bulletAppState;
@@ -39,8 +43,6 @@ public class App extends SimpleApplication implements ActionListener {
     //gestion des rounds
     private Puck puck;
     private Vector3f puckStartPosition;
-    private int player1Count = 0;
-    private int player2Count = 0;
     private boolean ModeJeu = true;
 
     private fr.univtln.pierre.samples.ui.MainMenuUI mainMenuUI;
@@ -49,8 +51,7 @@ public class App extends SimpleApplication implements ActionListener {
     private String player1Name = "Joueur 1";
     private String player2Name = "Joueur 2";
 
-    private int score1 = 0;
-    private int score2 = 0;
+
 
     private boolean menuVisible = true;
 
@@ -231,45 +232,7 @@ public class App extends SimpleApplication implements ActionListener {
         move.NiveauJoueur(5);
     }
 
-    private void initKeys() {
-        inputManager.addMapping("MENU_UP", new KeyTrigger(KeyInput.KEY_UP));
-        inputManager.addMapping("MENU_DOWN", new KeyTrigger(KeyInput.KEY_DOWN));
-        inputManager.addMapping("SELECT", new KeyTrigger(KeyInput.KEY_RETURN));
-        inputManager.addMapping("CHANGE_PLAYERS", new KeyTrigger(KeyInput.KEY_U));
-        inputManager.addMapping("ADD_SCORE_LEFT", new KeyTrigger(KeyInput.KEY_A));
-        inputManager.addMapping("ADD_SCORE_RIGHT", new KeyTrigger(KeyInput.KEY_P));
-        inputManager.addMapping("BACK_OR_QUIT", new KeyTrigger(KeyInput.KEY_ESCAPE));
 
-        inputManager.addListener(this,
-                "MENU_UP",
-                "MENU_DOWN",
-                "SELECT",
-                "CHANGE_PLAYERS",
-                "ADD_SCORE_LEFT",
-                "ADD_SCORE_RIGHT",
-                "BACK_OR_QUIT");
-    }
-
-
-
-
-
-
-    private void executeSelectedMenu() {
-        switch (selectedMenuIndex) {
-            case 0:
-                startGame();
-                break;
-            case 1:
-                changeMode();
-                break;
-            case 2:
-                stop();
-                break;
-            default:
-                break;
-        }
-    }
 
 
 
@@ -319,7 +282,27 @@ public class App extends SimpleApplication implements ActionListener {
         if (ModeJeu){
         move.simpleUpdateMoveOpponent(tpf);
         }
-        Rule.endRound(puck, player1Count, player2Count, puckStartPosition);
+        Rule.endRound(puck, puckStartPosition);
+        UpdateScore();
+    }
+
+
+
+
+
+        private void initKeys() {
+        inputManager.addMapping("MENU_UP", new KeyTrigger(KeyInput.KEY_UP));
+        inputManager.addMapping("MENU_DOWN", new KeyTrigger(KeyInput.KEY_DOWN));
+        inputManager.addMapping("SELECT", new KeyTrigger(KeyInput.KEY_RETURN));
+        inputManager.addMapping("CHANGE_PLAYERS", new KeyTrigger(KeyInput.KEY_U));
+        inputManager.addMapping("BACK_OR_QUIT", new KeyTrigger(KeyInput.KEY_ESCAPE));
+
+        inputManager.addListener(this,
+                "MENU_UP",
+                "MENU_DOWN",
+                "SELECT",
+                "CHANGE_PLAYERS",
+                "BACK_OR_QUIT");
     }
 
 
@@ -327,8 +310,26 @@ public class App extends SimpleApplication implements ActionListener {
 
 
 
+    private void executeSelectedMenu() {
+        switch (selectedMenuIndex) {
+            case 0:
+                startGame();
+                break;
+            case 1:
+                changeMode();
+                break;
+            case 2:
+                stop();
+                break;
+            default:
+                break;
+        }
+    }
+
+
 
     public void showMenu() {
+        flyCam.setEnabled(false);
         guiNode.detachAllChildren();
         menuVisible = true;
         mainMenuUI.show(player1Name, player2Name, selectedMenuIndex);
@@ -337,19 +338,20 @@ public class App extends SimpleApplication implements ActionListener {
     public void showHud() {
         guiNode.detachAllChildren();
         menuVisible = false;
-        gameHudUI.show(player1Name, player2Name, score1, score2);
+        gameHudUI.show(player1Name, player2Name, Rule.player1Count, Rule.player2Count);
     }
 
     public void startGame() {
-        score1 = 0;
-        score2 = 0;
+        flyCam.setEnabled(true);
+        Rule.player1Count = 0;
+        Rule.player2Count = 0;
         showHud();
     }
 
     public void changeMode() {
         if (player1Name.equals("Joueur 1")) {
-            player1Name = "Yassine";
-            player2Name = "Invité";
+            player1Name = "Joueur";
+            player2Name = "BOT";
             ModeJeu=false;
         } else {
             player1Name = "Joueur 1";
@@ -364,15 +366,13 @@ public class App extends SimpleApplication implements ActionListener {
         }
     }
 
-    public void addScoreLeft() {
-        score1++;
+    public void UpdateScore() {
+        if (!menuVisible){
         showHud();
+        }
     }
 
-    public void addScoreRight() {
-        score2++;
-        showHud();
-    }
+
 
     public int getScreenWidth() {
         return cam.getWidth();
@@ -423,14 +423,6 @@ public class App extends SimpleApplication implements ActionListener {
             }
         } else {
             switch (name) {
-                case "ADD_SCORE_LEFT":
-                    addScoreLeft();
-                    break;
-
-                case "ADD_SCORE_RIGHT":
-                    addScoreRight();
-                    break;
-
                 case "CHANGE_PLAYERS":
                     changeMode();
                     break;
