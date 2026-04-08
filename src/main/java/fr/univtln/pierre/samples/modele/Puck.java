@@ -70,6 +70,16 @@ public class Puck {
         position = table.getPosition().add(0, 2*height, -1.5f);
     }
 
+    public void resetPuck(int playerSide){
+        if (playerSide == 0) this.putOnMySide();
+        else this.putOnOpponentSide();
+        this.getPuck_phy().setPhysicsLocation(this.getPosition());
+        // reset of velocity
+        this.getPuck_phy().setLinearVelocity(Vector3f.ZERO);
+        this.getPuck_phy().setAngularVelocity(Vector3f.ZERO);
+    }
+
+
     /*
     public void putOnCenter(){
         this.position = table.getPosition().add(0, 2*height, 0);
