@@ -1,5 +1,6 @@
 package fr.univtln.pierre.samples;
 
+import com.bulletphysics.dynamics.RigidBody;
 import com.jme3.app.SimpleApplication;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.collision.shapes.BoxCollisionShape;
@@ -18,16 +19,42 @@ import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.system.AppSettings;
 
+import com.jme3.input.KeyInput;
+import com.jme3.input.controls.ActionListener;
+import com.jme3.input.controls.KeyTrigger;
+
+import fr.univtln.pierre.samples.game.Rule;
 import fr.univtln.pierre.samples.modele.*;
+import fr.univtln.pierre.samples.game.Ia;
 import fr.univtln.pierre.samples.game.Move;
 
-public class App extends SimpleApplication {
+public class App extends SimpleApplication implements ActionListener {
 
     private BulletAppState bulletAppState;
     //private InputManager inputManager;
     private Move move;
+    private Ia ia;
+    private Vector3f Last_position;
+    private int compteurFrames;
+    //gestion des rounds
+    private Puck puck;
+    private Vector3f puckStartPosition;
+    private int player1Count = 0;
+    private int player2Count = 0;
+    private boolean ModeJeu = false;
 
-    public static void main(String[] args){
+    private fr.univtln.pierre.samples.ui.MainMenuUI mainMenuUI;
+    private fr.univtln.pierre.samples.ui.GameHudUI gameHudUI;
+    private int selectedMenuIndex = 0;
+    private String player1Name = "Joueur 1";
+    private String player2Name = "Joueur 2";
+
+    private int score1 = 0;
+    private int score2 = 0;
+
+    private boolean menuVisible = true;
+
+    public static void main(String[] args) {
         App app = new App();
         AppSettings settings = new AppSettings(true);
         settings.setResolution(1280, 720);
@@ -46,6 +73,7 @@ public class App extends SimpleApplication {
         rootNode.attachChild(pivot); // put this node in the scene
         move = new Move();
         move.setUpKeys(inputManager);
+        ia = new Ia();
 
 
         bulletAppState = new BulletAppState();
@@ -94,12 +122,15 @@ public class App extends SimpleApplication {
         tableBaseGeometry.setMaterial(matBase);
 
         // puck
-        Puck puck = new Puck(20, 10, 0.3F, 0.15F, ColorRGBA.LightGray, table);
+        puck = new Puck(20, 10, 0.3F, 0.15F, ColorRGBA.LightGray, table);
         puck.putOnMySide();
         Material matPuck = LightManager.createMaterial(assetManager,puck.getColor());
         Geometry puckGeometry = puck.createGeometry();
         puck.createPhysic(puckGeometry, bulletAppState);
         puckGeometry.setMaterial(matPuck);
+        ia.setPuck(puck);
+        this.puck = puck;
+        puckStartPosition = new Vector3f(0f, 0.2f, 0f);
 
         // my paddle
         Paddle myPaddle = new Paddle(0.4F, 0.2F, 0.1F, ColorRGBA.Gray);
@@ -112,6 +143,8 @@ public class App extends SimpleApplication {
         Paddle opponentPaddle = new Paddle(0.4F, 0.2F, 0.1F, ColorRGBA.Gray);
         Geometry opponentPaddleGeometry = opponentPaddle.createGeometryOpponent(table);
         opponentPaddleGeometry.setMaterial(matPaddle);
+        opponentPaddle.createPhysic(opponentPaddleGeometry,bulletAppState);
+        ia.setPaddle(opponentPaddle);
         opponentPaddle.createPhysic(opponentPaddleGeometry, bulletAppState);
 
         move.setpaddle(myPaddle, opponentPaddle, puck);
@@ -156,7 +189,7 @@ public class App extends SimpleApplication {
         //myPaddle.createPhysic(paddleGeometry,bulletAppState);
         bonusGeometry.setMaterial(matBonus);
 
-
+    
         // persons figures
         /*
         // me
@@ -178,13 +211,61 @@ public class App extends SimpleApplication {
         pivot.attachChild(tableGeometry);
         pivot.attachChild(leftSideGeometry);
         pivot.attachChild(rightSideGeometry);
-        //pivot.attachChild(tableBaseGeometry);
         pivot.attachChild(puckGeometry);
         pivot.attachChild(paddleGeometry);
         pivot.attachChild(opponentPaddleGeometry);
         pivot.attachChild(bonusGeometry);
         //pivot.attachChild(me);
         //pivot.attachChild(opponent);
+
+        //permet de gérer l'ia
+        Last_position = ia.getPuck().getPuck_phy().getPhysicsLocation().clone();
+
+        // UI
+        mainMenuUI = new fr.univtln.pierre.samples.ui.MainMenuUI(this);
+        gameHudUI = new fr.univtln.pierre.samples.ui.GameHudUI(this);
+
+        initKeys();
+        showMenu();
+        ia.niveauIa(5);
+        move.NiveauJoueur(5);
+    }
+
+    private void initKeys() {
+        inputManager.addMapping("MENU_UP", new KeyTrigger(KeyInput.KEY_UP));
+        inputManager.addMapping("MENU_DOWN", new KeyTrigger(KeyInput.KEY_DOWN));
+        inputManager.addMapping("SELECT", new KeyTrigger(KeyInput.KEY_RETURN));
+        inputManager.addMapping("CHANGE_PLAYERS", new KeyTrigger(KeyInput.KEY_U));
+        inputManager.addMapping("ADD_SCORE_LEFT", new KeyTrigger(KeyInput.KEY_A));
+        inputManager.addMapping("ADD_SCORE_RIGHT", new KeyTrigger(KeyInput.KEY_P));
+        inputManager.addMapping("BACK_OR_QUIT", new KeyTrigger(KeyInput.KEY_ESCAPE));
+
+        inputManager.addListener(this,
+                "MENU_UP",
+                "MENU_DOWN",
+                "SELECT",
+                "CHANGE_PLAYERS",
+                "ADD_SCORE_LEFT",
+                "ADD_SCORE_RIGHT",
+                "BACK_OR_QUIT");
+    }
+
+
+
+    private void executeSelectedMenu() {
+        switch (selectedMenuIndex) {
+            case 0:
+                startGame();
+                break;
+            case 1:
+                changePlayers();
+                break;
+            case 2:
+                stop();
+                break;
+            default:
+                break;
+        }
     }
 
     public void placeCameraMySide(){
@@ -206,10 +287,147 @@ public class App extends SimpleApplication {
         cam.setRotation(roll90x);
     }
 
+    private void resetPuck() {
+        puck.getPuck_phy().setLinearVelocity(Vector3f.ZERO);
+        puck.getPuck_phy().setAngularVelocity(Vector3f.ZERO);
+        puck.getPuck_phy().setPhysicsLocation(puckStartPosition.clone());
+        puck.getPuck_phy().clearForces();
+    }
+
     @Override
     public void simpleUpdate(float tpf) {
+        //gestion des déplacement du joueur
+        compteurFrames++;
         move.simpleUpdateMove(tpf);
+        //System.out.println(tpf);
+
+        if (compteurFrames>=20){ //temps de réaction
+        //gestion des déplacement de l'IA
+        ia.simpleUpdateIaMove(tpf,this.Last_position);
+        this.Last_position = puck.getPuck_phy().getPhysicsLocation().clone();
+        compteurFrames=0;
+        }
+
+        move.simpleUpdateMove(tpf);
+
+        if (ModeJeu){
         move.simpleUpdateMoveOpponent(tpf);
-        move.resetPuck();
+        }
+        Rule.endRound(puck, player1Count, player2Count, puckStartPosition);
+    }
+
+    public void showMenu() {
+        guiNode.detachAllChildren();
+        menuVisible = true;
+        mainMenuUI.show(player1Name, player2Name, selectedMenuIndex);
+    }
+
+    public void showHud() {
+        guiNode.detachAllChildren();
+        menuVisible = false;
+        gameHudUI.show(player1Name, player2Name, score1, score2);
+    }
+
+    public void startGame() {
+        score1 = 0;
+        score2 = 0;
+        showHud();
+    }
+
+    public void changePlayers() {
+        if (player1Name.equals("Joueur 1")) {
+            player1Name = "Yassine";
+            player2Name = "Invité";
+        } else {
+            player1Name = "Joueur 1";
+            player2Name = "Joueur 2";
+        }
+
+        if (menuVisible) {
+            showMenu();
+        } else {
+            showHud();
+        }
+    }
+
+    public void addScoreLeft() {
+        score1++;
+        showHud();
+    }
+
+    public void addScoreRight() {
+        score2++;
+        showHud();
+    }
+
+    public int getScreenWidth() {
+        return cam.getWidth();
+    }
+
+    public int getScreenHeight() {
+        return cam.getHeight();
+    }
+
+    public void onAction(String name, boolean isPressed, float tpf) {
+        if (!isPressed) {
+            return;
+        }
+
+        if (menuVisible) {
+            switch (name) {
+                case "MENU_UP":
+                    selectedMenuIndex--;
+                    if (selectedMenuIndex < 0) {
+                        selectedMenuIndex = 2;
+                    }
+                    showMenu();
+                    break;
+
+                case "MENU_DOWN":
+                    selectedMenuIndex++;
+                    if (selectedMenuIndex > 2) {
+                        selectedMenuIndex = 0;
+                    }
+                    showMenu();
+                    break;
+
+                case "SELECT":
+                    executeSelectedMenu();
+                    break;
+
+                case "CHANGE_PLAYERS":
+                    selectedMenuIndex = 1;
+                    changePlayers();
+                    break;
+
+                case "BACK_OR_QUIT":
+                    stop();
+                    break;
+
+                default:
+                    break;
+            }
+        } else {
+            switch (name) {
+                case "ADD_SCORE_LEFT":
+                    addScoreLeft();
+                    break;
+
+                case "ADD_SCORE_RIGHT":
+                    addScoreRight();
+                    break;
+
+                case "CHANGE_PLAYERS":
+                    changePlayers();
+                    break;
+
+                case "BACK_OR_QUIT":
+                    showMenu();
+                    break;
+
+                default:
+                    break;
+            }
+        }
     }
 }

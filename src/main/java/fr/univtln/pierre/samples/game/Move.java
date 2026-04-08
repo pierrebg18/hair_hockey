@@ -9,8 +9,11 @@ import fr.univtln.pierre.samples.modele.Paddle;
 
 import com.jme3.input.controls.ActionListener;
 import fr.univtln.pierre.samples.modele.Puck;
+import lombok.Getter;
+import lombok.Setter;
 
-
+@Setter
+@Getter
 public class Move implements ActionListener{
     /** On remplace certains raccourcis de navigation ici, afin de pouvoir
      * ajouter la marche et le saut contrôlés par la physique : */
@@ -19,8 +22,30 @@ public class Move implements ActionListener{
     private Paddle myPaddle;
     private Paddle opponentPaddle;
     private Puck puck;
+    private float speed = 3f ;
 
     public Move(){
+    }
+
+    public void NiveauJoueur(int Niveau){
+        if (Niveau==1){
+        setSpeed(2f);
+        }
+        else if(Niveau==2){
+        setSpeed(2.5f);
+        }
+        else if(Niveau==3){
+        setSpeed(3f);
+        }
+        else if(Niveau==4){
+        setSpeed(3.5f);
+        }
+        else if(Niveau==5){
+        setSpeed(4f);
+        }
+        else{
+            System.out.println("erreur de niveau selectionné");
+        }
     }
 
     public void setpaddle(Paddle myPaddle, Paddle opponentPaddle, Puck puck){
@@ -87,11 +112,18 @@ public class Move implements ActionListener{
         if (down) {
             velocity.z += speed;
         }
+
+        myPaddle.getPaddle_phy().setLinearVelocity(velocity);
+        // clone() crée une copie indépendante de la position physique
+        myPaddle.setposition(myPaddle.getPaddle_phy().getPhysicsLocation().clone());
+        
+
+        //System.out.println(paddle.getposition());
         myPaddle.getPaddle_phy().setLinearVelocity(velocity);
     }
 
     public void simpleUpdateMoveOpponent(float tpf) {
-        float speed = 3f ;
+        
         Vector3f velocity = new Vector3f(0, 0, 0);
         if (leftOp) {
             velocity.x -= speed;
