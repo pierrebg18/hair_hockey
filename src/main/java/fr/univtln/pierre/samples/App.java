@@ -155,7 +155,8 @@ public class App extends SimpleApplication {
         Geometry bonusGeometry = bonus.createGeometry();
         //myPaddle.createPhysic(paddleGeometry,bulletAppState);
         bonusGeometry.setMaterial(matBonus);
-
+        move.setBonus(bonus);
+        move.setPuckShape(puckGeometry);
 
         // persons figures
         /*
@@ -211,5 +212,6 @@ public class App extends SimpleApplication {
         move.simpleUpdateMove(tpf);
         move.simpleUpdateMoveOpponent(tpf);
         move.resetPuck();
+        move.bonusTouch();
     }
 }

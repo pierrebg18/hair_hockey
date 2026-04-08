@@ -1,14 +1,19 @@
 package fr.univtln.pierre.samples.game;
 
+import com.jme3.collision.CollisionResult;
+import com.jme3.collision.CollisionResults;
 import com.jme3.input.InputManager;
 import com.jme3.input.KeyInput;
 import com.jme3.input.controls.KeyTrigger;
 import com.jme3.math.Vector3f;
 
+import com.jme3.scene.Geometry;
+import fr.univtln.pierre.samples.modele.Bonus;
 import fr.univtln.pierre.samples.modele.Paddle;
 
 import com.jme3.input.controls.ActionListener;
 import fr.univtln.pierre.samples.modele.Puck;
+import lombok.Setter;
 
 
 public class Move implements ActionListener{
@@ -19,6 +24,10 @@ public class Move implements ActionListener{
     private Paddle myPaddle;
     private Paddle opponentPaddle;
     private Puck puck;
+    @Setter
+    private Bonus bonus = null;
+    @Setter
+    private Geometry puckShape;
 
     public Move(){
     }
@@ -115,6 +124,24 @@ public class Move implements ActionListener{
             // reset of velocity
             puck.getPuck_phy().setLinearVelocity(Vector3f.ZERO);
             puck.getPuck_phy().setAngularVelocity(Vector3f.ZERO);
+        }
+    }
+
+    public void bonusTouch(){
+        if (bonus != null) {
+            // Calculate detection results
+            CollisionResults results = new CollisionResults();
+            bonus.getBonusBoundingBox().collideWith(puckShape, results);
+            // Use the results
+            if (results.size() > 0) {
+                // how to react when a collision was detected
+                CollisionResult closest = results.getClosestCollision();
+                System.out.println("What was hit? " + closest.getGeometry().getName());
+                System.out.println("Where was it hit? " + closest.getContactPoint());
+                System.out.println("Distance? " + closest.getDistance());
+            } else {
+                // how to react when no collision occurred
+            }
         }
     }
 }
