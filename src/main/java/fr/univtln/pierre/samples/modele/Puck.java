@@ -1,8 +1,9 @@
 package fr.univtln.pierre.samples.modele;
 
+import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.control.RigidBodyControl;
-import com.jme3.app.SimpleApplication;
 import com.jme3.bullet.BulletAppState;
+import com.jme3.bullet.util.CollisionShapeFactory;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
@@ -22,6 +23,7 @@ public class Puck {
     private Vector3f position;
     private ColorRGBA color;
     private Table table;
+    private RigidBodyControl puck_phy;
 
     public Puck(int axisSamples, int radialSamples, float radius, float height, ColorRGBA color, Table table) {
         this.axisSamples = axisSamples;
@@ -45,11 +47,14 @@ public class Puck {
         return puck;
     }
 
-    public void createPhysic(Geometry puck_geo,BulletAppState bulletAppState){
-        RigidBodyControl puck_phy = new RigidBodyControl(5.0f);
+    public void createPhysic(Geometry puck_geo, BulletAppState bulletAppState){
+        puck_phy = new RigidBodyControl( 50f);
         puck_geo.addControl(puck_phy);
+        puck_phy.setRestitution(5f);
+        puck_phy.setFriction(0f);
         bulletAppState.getPhysicsSpace().add(puck_phy);
     }
+
     public void putOnMySide(){
         position = table.getPosition().add(0, 2*height, table.getLenght()/2);
     }
@@ -62,4 +67,18 @@ public class Puck {
         this.position = table.getPosition().add(0, 2*height, 0);
     }
 
+    public Vector3f getposition(){
+        return this.position;
+    }
+
+
+    public void setposition(Vector3f vector3f){
+        this.position=vector3f;
+    }
+
+    //permet de savoir si un objet a bouge sur l'axe x et z
+    public boolean hasMoved(Vector3f lastCoord){
+        Vector3f currentCoord = this.puck_phy.getPhysicsLocation();
+        return Math.abs(lastCoord.x - currentCoord.x) > 0.001f || Math.abs(lastCoord.z - currentCoord.z) > 0.1f;
+    }
 }

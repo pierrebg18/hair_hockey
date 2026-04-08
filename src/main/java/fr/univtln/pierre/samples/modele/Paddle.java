@@ -17,6 +17,7 @@ public class Paddle {
     private float thickness;
     private ColorRGBA color;
     private Vector3f position;
+    private RigidBodyControl paddle_phy;
 
     public Paddle(float width, float length, float thickness, ColorRGBA color) {
         this.width = width;
@@ -41,9 +42,21 @@ public class Paddle {
         return paddle;
     }
 
-    public void createPhysic(Geometry paddle_geo,BulletAppState bulletAppState){
-        RigidBodyControl paddle_phy = new RigidBodyControl(5.0f);
+    public void createPhysic(Geometry paddle_geo, BulletAppState bulletAppState){
+        this.paddle_phy = new RigidBodyControl(500f);
         paddle_geo.addControl(paddle_phy);
+        paddle_phy.setAngularFactor(0f); // to block rotation
         bulletAppState.getPhysicsSpace().add(paddle_phy);
     }
+
+
+    public Vector3f getposition(){
+        return this.position;
+    }
+
+
+    public void setposition(Vector3f vector3f){
+        this.position=vector3f;
+    }
+
 }
