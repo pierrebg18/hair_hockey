@@ -36,7 +36,7 @@ public class App extends SimpleApplication {
     private Vector3f puckStartPosition;
     private int player1Count = 0;
     private int player2Count = 0;
-    private boolean ModeJeu = true;
+    private boolean ModeJeu = false;
 
     public static void main(String[] args){
         App app = new App();
