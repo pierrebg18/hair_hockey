@@ -2,6 +2,8 @@ package fr.univtln.pierre.samples;
 
 import com.jme3.app.SimpleApplication;
 import com.jme3.bullet.BulletAppState;
+import com.jme3.bullet.collision.shapes.BoxCollisionShape;
+import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.light.PointLight;
 import com.jme3.input.InputManager;
@@ -16,6 +18,7 @@ import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.system.AppSettings;
 
+import fr.univtln.pierre.samples.game.Rule;
 import fr.univtln.pierre.samples.modele.*;
 import fr.univtln.pierre.samples.game.Ia;
 import fr.univtln.pierre.samples.game.Move;
@@ -27,8 +30,12 @@ public class App extends SimpleApplication {
     private Move move;
     private Ia ia;
     private Vector3f Last_position;
-    private Puck puck;
     private int compteurFrames;
+    //gestion des rounds
+    private Puck puck;
+    private Vector3f puckStartPosition;
+    private int player1Count = 0;
+    private int player2Count = 0;
 
     public static void main(String[] args){
         App app = new App();
@@ -98,7 +105,7 @@ public class App extends SimpleApplication {
         tableBaseGeometry.setMaterial(matBase);
 
         // puck
-        Puck puck = new Puck(20, 10, 0.3F, 0.15F, ColorRGBA.LightGray, table);
+        puck = new Puck(20, 10, 0.3F, 0.15F, ColorRGBA.LightGray, table);
         puck.putOnMySide();
         Material matPuck = LightManager.createMaterial(assetManager,puck.getColor());
         Geometry puckGeometry = puck.createGeometry();
@@ -106,6 +113,7 @@ public class App extends SimpleApplication {
         puckGeometry.setMaterial(matPuck);
         ia.setPuck(puck);
         this.puck = puck;
+        puckStartPosition = new Vector3f(0f, 0.2f, 0f);
 
         // my paddle
         Paddle myPaddle = new Paddle(0.4F, 0.2F, 0.1F, ColorRGBA.Gray);
@@ -113,7 +121,6 @@ public class App extends SimpleApplication {
         Geometry paddleGeometry = myPaddle.createGeometryMy(table);
         myPaddle.createPhysic(paddleGeometry,bulletAppState);
         paddleGeometry.setMaterial(matPaddle);
-        move.setpaddle(myPaddle);
 
         // opponent's paddle
         Paddle opponentPaddle = new Paddle(0.4F, 0.2F, 0.1F, ColorRGBA.Gray);
@@ -121,6 +128,43 @@ public class App extends SimpleApplication {
         opponentPaddleGeometry.setMaterial(matPaddle);
         opponentPaddle.createPhysic(opponentPaddleGeometry,bulletAppState);
         ia.setPaddle(opponentPaddle);
+        opponentPaddle.createPhysic(opponentPaddleGeometry, bulletAppState);
+
+        move.setpaddle(myPaddle, opponentPaddle, puck);
+
+        // collision groups to block each puddle in its zone
+
+        // invisible walls
+        InvisibleWall centerWall = new InvisibleWall(table);
+        centerWall.createPhysicCenter(bulletAppState);
+
+        InvisibleWall mySideWall = new InvisibleWall(table);
+        mySideWall.createPhysicMySide(bulletAppState);
+
+        InvisibleWall opponentSideWall = new InvisibleWall(table);
+        opponentSideWall.createPhysicOpponentSide(bulletAppState);
+
+        // collision groups (powers of 2)
+        int groupPaddle = 1;
+        int groupWall = 2;
+        int groupPuck = 4;
+
+        // definition of groups
+        myPaddle.getPaddle_phy().setCollisionGroup(groupPaddle);
+        opponentPaddle.getPaddle_phy().setCollisionGroup(groupPaddle);
+        centerWall.getWall_phy().setCollisionGroup(groupWall);
+        mySideWall.getWall_phy().setCollisionGroup(groupWall);
+        opponentSideWall.getWall_phy().setCollisionGroup(groupWall);
+        puck.getPuck_phy().setCollisionGroup(groupPuck);
+
+        // definition of collision interactions
+        myPaddle.getPaddle_phy().setCollideWithGroups(groupPuck | groupWall); // collision with invisible walls and puck
+        opponentPaddle.getPaddle_phy().setCollideWithGroups(groupPuck | groupWall); // the same as previous
+        centerWall.getWall_phy().setCollideWithGroups(groupPaddle); // collision with puddle, but not puck
+        mySideWall.getWall_phy().setCollideWithGroups(groupPaddle);
+        opponentSideWall.getWall_phy().setCollideWithGroups(groupPaddle);
+        puck.getPuck_phy().setCollideWithGroups(groupPaddle); // collision with puddle, but not with invisible walls
+
         // persons figures
         /*
         // me
@@ -135,6 +179,9 @@ public class App extends SimpleApplication {
         //opponent.rotate(0.0f, 1.5f, 0.0f);
         opponent.setLocalTranslation(0.0f, 0.0f, -table.getLenght()-2f);
          */
+
+        // to display collision shapes
+        // bulletAppState.setDebugEnabled(true);
 
         pivot.attachChild(tableGeometry);
         pivot.attachChild(leftSideGeometry);
@@ -169,6 +216,12 @@ public class App extends SimpleApplication {
         cam.setRotation(roll90x);
     }
 
+    private void resetPuck() {
+        puck.getPuck_phy().setLinearVelocity(Vector3f.ZERO);
+        puck.getPuck_phy().setAngularVelocity(Vector3f.ZERO);
+        puck.getPuck_phy().setPhysicsLocation(puckStartPosition.clone());
+        puck.getPuck_phy().clearForces();
+    }
     
     @Override
     public void simpleUpdate(float tpf) {
@@ -183,5 +236,9 @@ public class App extends SimpleApplication {
         this.Last_position = puck.getPuck_phy().getPhysicsLocation().clone();
         compteurFrames=0;
         }
+
+        move.simpleUpdateMove(tpf);
+        move.simpleUpdateMoveOpponent(tpf);
+        Rule.endRound(puck, player1Count, player2Count, puckStartPosition);
     }
 }
