@@ -70,7 +70,7 @@ public class Bonus {
     }
 
     public void generatePosition(){
-        /*From documentation :
+        /* From documentation :
         nextFloat returns the next pseudorandom, uniformly distributed float value between 0.0 and 1.0 from this
         random number generator's sequence.
         */

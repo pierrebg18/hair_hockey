@@ -1,5 +1,8 @@
 package fr.univtln.pierre.samples.game;
 
+import com.jme3.app.SimpleApplication;
+import com.jme3.bounding.BoundingBox;
+import com.jme3.bullet.collision.shapes.BoxCollisionShape;
 import com.jme3.collision.CollisionResult;
 import com.jme3.collision.CollisionResults;
 import com.jme3.input.InputManager;
@@ -28,6 +31,7 @@ public class Move implements ActionListener{
     private Bonus bonus = null;
     @Setter
     private Geometry puckShape;
+    private int lastTouch = 0; // 0 for me, 1 for opponent
 
     public Move(){
     }
@@ -117,13 +121,12 @@ public class Move implements ActionListener{
         opponentPaddle.getPaddle_phy().setLinearVelocity(velocity);
     }
 
-    public void resetPuck(){
+    public void resetPuckFall(){
         if (puck.getPuck_phy().getPhysicsLocation().y < -0.5){
-            puck.putOnMySide();
-            puck.getPuck_phy().setPhysicsLocation(puck.getPosition());
-            // reset of velocity
-            puck.getPuck_phy().setLinearVelocity(Vector3f.ZERO);
-            puck.getPuck_phy().setAngularVelocity(Vector3f.ZERO);
+            // put on side of that who lost
+            System.out.println(puck.getPuck_phy().getPhysicsLocation().z);
+            puck.resetPuck(puck.getPuck_phy().getPhysicsLocation().z>0?0:1);
+            //System.out.println("Last touch :" + lastTouch);
         }
     }
 
@@ -141,6 +144,55 @@ public class Move implements ActionListener{
                 System.out.println("Distance? " + closest.getDistance());
             } else {
                 // how to react when no collision occurred
+            }
+        }
+    }
+
+    private int timeInCenter = 0;
+    public void blockInCenter(float tpf){
+        float z = puck.getPuck_phy().getPhysicsLocation().z;
+        Vector3f velocity = puck.getPuck_phy().getLinearVelocity();
+        //System.out.println("Velocity" + velocity);
+        float radius = puck.getRadius();
+        float minVelocity = 0.1f;
+        if (z < 1.5f-radius && z > -1.5f+-radius
+                && velocity.x <= minVelocity &&  velocity.y <= minVelocity && velocity.z <= minVelocity) {
+            timeInCenter += 1;
+            if (timeInCenter > 240){
+                // put on opposite side from that one who touched the last
+                puck.resetPuck(lastTouch==0?1:0);
+            }
+        }
+        else timeInCenter = 0;
+        //System.out.println("Time in center: " + timeInCenter);
+    }
+
+    public void lastPlayerTouch(){
+        // Calculate detection results for my puck
+        CollisionResults results = new CollisionResults();
+        BoundingBox myPaddleBoundingBox =new BoundingBox(myPaddle.getPaddle_phy().getPhysicsLocation(),
+                myPaddle.getWidth(), myPaddle.getThickness(), myPaddle.getLenght());
+        puckShape.collideWith(myPaddleBoundingBox, results);
+        if (results.size() > 0) {
+            System.out.println("Touch with me");
+            // how to react when a collision was detected
+            CollisionResult closest = results.getClosestCollision();
+//            System.out.println("What was hit? " + closest.getGeometry().getName());
+//            System.out.println("Where was it hit? " + closest.getContactPoint());
+//            System.out.println("Distance? " + closest.getDistance());
+            lastTouch = 0;
+        } else {
+            BoundingBox opponentPaddleBoundingBox = new BoundingBox(opponentPaddle.getPaddle_phy().getPhysicsLocation(),
+                    opponentPaddle.getWidth(), opponentPaddle.getThickness(), opponentPaddle.getLenght());
+            puckShape.collideWith(opponentPaddleBoundingBox, results);
+            if (results.size() > 0) {
+                System.out.println("Touch with opponent");
+                // how to react when a collision was detected
+                CollisionResult closest = results.getClosestCollision();
+                System.out.println("What was hit? " + closest.getGeometry().getName());
+                System.out.println("Where was it hit? " + closest.getContactPoint());
+                System.out.println("Distance? " + closest.getDistance());
+                lastTouch = 1;
             }
         }
     }
