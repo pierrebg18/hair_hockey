@@ -16,6 +16,31 @@ public class Ia {
     private float speed_x = 2f;
     private float speed_z = 5f;
     
+    public void niveauIa(int Niveau){
+        if (Niveau==1){
+        setSpeed_x(0.5f);
+        setSpeed_z(3f);
+        }
+        else if(Niveau==2){
+        setSpeed_x(1f);
+        setSpeed_z(3f);
+        }
+        else if(Niveau==3){
+        setSpeed_x(1.5f);
+        setSpeed_z(3f);
+        }
+        else if(Niveau==4){
+        setSpeed_x(2f);
+        setSpeed_z(5f);
+        }
+        else if(Niveau==5){
+        setSpeed_x(2.5f);
+        setSpeed_z(8f);
+        }
+        else{
+            System.out.println("erreur de niveau selectionné");
+        }
+    }
     public void simpleUpdateIaMove(float tpf, Vector3f lastPos) {
 
         boolean hasMoved = puck.hasMoved(lastPos);
@@ -33,7 +58,7 @@ public class Ia {
                 velocity.x += speed_x;
             }
             
-            if (puckCoord.z < -2.0f){
+            if (puckCoord.z < -1.5f){
                 velocity.z += speed_z;
                 back=true;
             }

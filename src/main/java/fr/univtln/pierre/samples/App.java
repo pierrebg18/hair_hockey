@@ -23,10 +23,6 @@ import com.jme3.input.KeyInput;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.KeyTrigger;
 
-import fr.univtln.pierre.samples.modele.Paddle;
-import fr.univtln.pierre.samples.modele.Puck;
-import fr.univtln.pierre.samples.modele.Side;
-import fr.univtln.pierre.samples.modele.Table;
 import fr.univtln.pierre.samples.game.Rule;
 import fr.univtln.pierre.samples.modele.*;
 import fr.univtln.pierre.samples.game.Ia;
@@ -222,6 +218,8 @@ public class App extends SimpleApplication implements ActionListener {
 
         initKeys();
         showMenu();
+        ia.niveauIa(5);
+        move.NiveauJoueur(5);
     }
 
     private void initKeys() {
