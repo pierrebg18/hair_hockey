@@ -328,6 +328,7 @@ public class App extends SimpleApplication implements ActionListener {
         Puck.pinPuckHeight(puck,puckMaxHeight);
         Puck.stabilizePuck(puck);
         Rule.endRound(puck, player1Count, player2Count, puckStartPosition);
+
     }
 
     public void showMenu() {

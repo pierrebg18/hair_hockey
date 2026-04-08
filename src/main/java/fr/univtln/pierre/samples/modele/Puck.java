@@ -50,10 +50,17 @@ public class Puck {
     public void createPhysic(Geometry puck_geo, BulletAppState bulletAppState){
         puck_phy = new RigidBodyControl( 50f);
         puck_geo.addControl(puck_phy);
-        puck_phy.setRestitution(5f);
+        puck_phy.setRestitution(3f);
         puck_phy.setFriction(0f);
+
+        puck_phy.setCcdMotionThreshold(0.001f);
+        puck_phy.setCcdSweptSphereRadius(radius * 0.8f);
         bulletAppState.getPhysicsSpace().add(puck_phy);
     }
+
+
+
+
 
     public void putOnMySide(){
         position = table.getPosition().add(0, 2*height, 1.5f);
