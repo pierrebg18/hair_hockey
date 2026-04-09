@@ -24,6 +24,7 @@ import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.KeyTrigger;
 
 import fr.univtln.pierre.samples.game.Rule;
+import fr.univtln.pierre.samples.game.Tournament;
 import fr.univtln.pierre.samples.modele.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -33,6 +34,8 @@ import fr.univtln.pierre.samples.game.Move;
 import static fr.univtln.pierre.samples.modele.Puck.pinPuckHeight;
 import static fr.univtln.pierre.samples.modele.Puck.stabilizePuck;
 
+@Getter
+@Setter
 public class App extends SimpleApplication implements ActionListener {
 
     private BulletAppState bulletAppState;
@@ -47,14 +50,14 @@ public class App extends SimpleApplication implements ActionListener {
     private float puckMaxHeight;
     private int player1Count = 0;
     private int player2Count = 0;
-    private boolean ModeJeu = false;
+    private boolean ModeJeu=true;
 
     private fr.univtln.pierre.samples.ui.MainMenuUI mainMenuUI;
     private fr.univtln.pierre.samples.ui.GameHudUI gameHudUI;
     private int selectedMenuIndex = 0;
     private String player1Name = "Joueur 1";
     private String player2Name = "Joueur 2";
-
+    private Tournament tournament = new Tournament();
 
 
     private boolean menuVisible = true;
@@ -79,6 +82,7 @@ public class App extends SimpleApplication implements ActionListener {
         move = new Move();
         move.setUpKeys(inputManager);
         ia = new Ia();
+ 
 
 
         bulletAppState = new BulletAppState();
@@ -233,8 +237,6 @@ public class App extends SimpleApplication implements ActionListener {
 
         initKeys();
         showMenu();
-        ia.niveauIa(5);
-        move.NiveauJoueur(5);
     }
 
 
@@ -291,7 +293,7 @@ public class App extends SimpleApplication implements ActionListener {
         move.simpleUpdateMove(tpf);
 
         if (ModeJeu){
-        move.simpleUpdateMoveOpponent(tpf);
+            move.simpleUpdateMoveOpponent(tpf);
         }
         Puck.pinPuckHeight(puck,puckMaxHeight);
         Puck.stabilizePuck(puck);
@@ -366,6 +368,7 @@ public class App extends SimpleApplication implements ActionListener {
             player1Name = "Joueur";
             player2Name = "BOT";
             ModeJeu=false;
+            ia.niveauIa(1);
         } else {
             player1Name = "Joueur 1";
             player2Name = "Joueur 2";
@@ -381,7 +384,22 @@ public class App extends SimpleApplication implements ActionListener {
 
     public void UpdateScore() {
         if (!menuVisible){
-        showHud();
+            showHud();
+            if (ModeJeu){
+                if (Rule.player1Count==1){
+                    tournament.addLevel();
+                    tournament.updateLevel(ia,move);
+                    if (tournament.getLevel()==6){
+                        stop();
+                    }
+                    Rule.player1Count=0;
+                    Rule.player2Count=0;
+                }
+                else if (Rule.player2Count==12){
+                    System.out.println("You lose");
+                    stop();
+                }
+            }
         }
     }
 

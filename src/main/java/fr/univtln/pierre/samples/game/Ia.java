@@ -13,8 +13,8 @@ public class Ia {
     private Paddle paddle;
     private Puck puck;
     private boolean back=false;
-    private float speed_x = 2f;
-    private float speed_z = 5f;
+    private float speed_x = 0f;
+    private float speed_z = 0f;
     
     public void niveauIa(int Niveau){
         if (Niveau==1){
@@ -36,6 +36,11 @@ public class Ia {
         else if(Niveau==5){
         setSpeed_x(2.5f);
         setSpeed_z(8f);
+        }
+        // pour les tests
+        else if(Niveau==66){
+            setSpeed_x(0f);
+            setSpeed_z(0f);
         }
         else{
             System.out.println("erreur de niveau selectionné");
