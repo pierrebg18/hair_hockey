@@ -3,20 +3,13 @@ package fr.univtln.pierre.samples;
 import com.bulletphysics.dynamics.RigidBody;
 import com.jme3.app.SimpleApplication;
 import com.jme3.bullet.BulletAppState;
-import com.jme3.bullet.collision.shapes.BoxCollisionShape;
-import com.jme3.bullet.collision.shapes.CollisionShape;
-import com.jme3.bullet.control.RigidBodyControl;
-import com.jme3.light.PointLight;
-import com.jme3.input.InputManager;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
-import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
-import com.jme3.scene.Spatial;
 import com.jme3.system.AppSettings;
 
 import com.jme3.input.KeyInput;
@@ -77,12 +70,13 @@ public class App extends SimpleApplication implements ActionListener {
     @Override
     public void simpleInitApp() {
         placeCameraMySide();
+        //flyCam.setEnabled(false);
         Node pivot = new Node("pivot");
         rootNode.attachChild(pivot); // put this node in the scene
         move = new Move();
         move.setUpKeys(inputManager);
         ia = new Ia();
- 
+
 
 
         bulletAppState = new BulletAppState();
@@ -198,8 +192,9 @@ public class App extends SimpleApplication implements ActionListener {
         Geometry bonusGeometry = bonus.createGeometry();
         //myPaddle.createPhysic(paddleGeometry,bulletAppState);
         bonusGeometry.setMaterial(matBonus);
+        move.setBonus(bonus);
+        move.setPuckShape(puckGeometry);
 
-    
         // persons figures
         /*
         // me
@@ -221,6 +216,7 @@ public class App extends SimpleApplication implements ActionListener {
         pivot.attachChild(tableGeometry);
         pivot.attachChild(leftSideGeometry);
         pivot.attachChild(rightSideGeometry);
+        //pivot.attachChild(tableBaseGeometry);
         pivot.attachChild(puckGeometry);
         pivot.attachChild(paddleGeometry);
         pivot.attachChild(opponentPaddleGeometry);
@@ -263,24 +259,16 @@ public class App extends SimpleApplication implements ActionListener {
         cam.setRotation(roll90x);
     }
 
-    private void resetPuck() {
-        puck.getPuck_phy().setLinearVelocity(Vector3f.ZERO);
-        puck.getPuck_phy().setAngularVelocity(Vector3f.ZERO);
-        puck.getPuck_phy().setPhysicsLocation(puckStartPosition.clone());
-        puck.getPuck_phy().clearForces();
-    }
-
-
-
-
-
-
-
     @Override
     public void simpleUpdate(float tpf) {
         //gestion des déplacement du joueur
         compteurFrames++;
         move.simpleUpdateMove(tpf);
+        move.simpleUpdateMoveOpponent(tpf);
+        move.resetPuckFall();
+        move.bonusTouch();
+        move.blockInCenter(tpf);
+        move.lastPlayerTouch();
         //System.out.println(tpf);
 
         if (compteurFrames>=20){ //temps de réaction
