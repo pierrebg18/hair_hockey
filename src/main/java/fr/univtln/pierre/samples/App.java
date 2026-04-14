@@ -1,22 +1,14 @@
 package fr.univtln.pierre.samples;
 
-import com.bulletphysics.dynamics.RigidBody;
 import com.jme3.app.SimpleApplication;
 import com.jme3.bullet.BulletAppState;
-import com.jme3.bullet.collision.shapes.BoxCollisionShape;
-import com.jme3.bullet.collision.shapes.CollisionShape;
-import com.jme3.bullet.control.RigidBodyControl;
-import com.jme3.light.PointLight;
-import com.jme3.input.InputManager;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
-import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
-import com.jme3.scene.Spatial;
 import com.jme3.system.AppSettings;
 
 import com.jme3.input.KeyInput;
@@ -24,20 +16,21 @@ import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.KeyTrigger;
 
 import fr.univtln.pierre.samples.game.Rule;
-import fr.univtln.pierre.samples.game.Tournament;
 import fr.univtln.pierre.samples.modele.*;
-import fr.univtln.pierre.samples.ui.WinHudUI;
+import fr.univtln.pierre.samples.ui.UiManager;
 import lombok.Getter;
 import lombok.Setter;
 import fr.univtln.pierre.samples.game.Ia;
 import fr.univtln.pierre.samples.game.Move;
 
-import static fr.univtln.pierre.samples.modele.Puck.pinPuckHeight;
-import static fr.univtln.pierre.samples.modele.Puck.stabilizePuck;
 
 @Getter
 @Setter
 public class App extends SimpleApplication implements ActionListener {
+    
+    ////////
+    //Definition des attribut
+    //////
 
     private BulletAppState bulletAppState;
     //private InputManager inputManager;
@@ -49,20 +42,16 @@ public class App extends SimpleApplication implements ActionListener {
     private Puck puck;
     private Vector3f puckStartPosition;
     private float puckMaxHeight;
-    private int player1Count = 0;
-    private int player2Count = 0;
-    private boolean ModeJeu=true;
 
-    private fr.univtln.pierre.samples.ui.MainMenuUI mainMenuUI;
-    private fr.univtln.pierre.samples.ui.GameHudUI gameHudUI;
-    private fr.univtln.pierre.samples.ui.WinHudUI winHudUI;
-    private int selectedMenuIndex = 0;
-    private String player1Name = "Joueur 1";
-    private String player2Name = "Joueur 2";
-    private Tournament tournament = new Tournament();
+    //va récupérer le mode présent dans UiManager
+    private boolean modeJeu = true;
+
+    private UiManager uiManager;
 
 
-    private boolean menuVisible = true;
+    ////////
+    /// Lance le jeu
+    ////////
 
     public static void main(String[] args) {
         App app = new App();
@@ -73,9 +62,10 @@ public class App extends SimpleApplication implements ActionListener {
         app.start();
     }
 
-    public App(){
-    }
 
+    ////////
+    /// Initialisation 
+    ////////
     @Override
     public void simpleInitApp() {
         placeCameraMySide();
@@ -234,19 +224,19 @@ public class App extends SimpleApplication implements ActionListener {
         Last_position = ia.getPuck().getPuck_phy().getPhysicsLocation().clone();
 
         // UI
-        mainMenuUI = new fr.univtln.pierre.samples.ui.MainMenuUI(this);
-        gameHudUI = new fr.univtln.pierre.samples.ui.GameHudUI(this);
-        winHudUI = new fr.univtln.pierre.samples.ui.WinHudUI(this);
+        uiManager = new UiManager(this, ia, move);
 
         initKeys();
-        showMenu();
+        uiManager.showMenu();
     }
 
 
 
 
 
-
+    ////////
+    /// Gestion des cameras 
+    ////////
     public void placeCameraMySide(){
         cam.setLocation(new Vector3f(0, 4f, 9f));
         cam.lookAt(new Vector3f(0, 0, 0), new Vector3f(0, 1, 1));
@@ -266,6 +256,10 @@ public class App extends SimpleApplication implements ActionListener {
         cam.setRotation(roll90x);
     }
 
+
+    ////////
+    /// Met bien le Puck
+    ////////
     private void resetPuck() {
         puck.getPuck_phy().setLinearVelocity(Vector3f.ZERO);
         puck.getPuck_phy().setAngularVelocity(Vector3f.ZERO);
@@ -277,7 +271,9 @@ public class App extends SimpleApplication implements ActionListener {
 
 
 
-
+    ////////
+    /// Réactualise a chaque frame
+    ////////
 
     @Override
     public void simpleUpdate(float tpf) {
@@ -295,20 +291,27 @@ public class App extends SimpleApplication implements ActionListener {
 
         move.simpleUpdateMove(tpf);
 
-        if (ModeJeu){
+        modeJeu = uiManager.isMultiplayerMode();
+        if (modeJeu){
             move.simpleUpdateMoveOpponent(tpf);
         }
         Puck.pinPuckHeight(puck,puckMaxHeight);
         Puck.stabilizePuck(puck);
+
+        //gère l'update du score coté back
         Rule.endRound(puck, puckStartPosition);
-        UpdateScore();
+        
+        //gère l'update du score coté front ainsi que le round
+        uiManager.updateScore();
     }
 
 
 
 
-
-        private void initKeys() {
+    ////////
+    /// Bind touche pour le menu
+    ////////
+    private void initKeys() {
         inputManager.addMapping("MENU_UP", new KeyTrigger(KeyInput.KEY_UP));
         inputManager.addMapping("MENU_DOWN", new KeyTrigger(KeyInput.KEY_DOWN));
         inputManager.addMapping("SELECT", new KeyTrigger(KeyInput.KEY_RETURN));
@@ -324,92 +327,6 @@ public class App extends SimpleApplication implements ActionListener {
     }
 
 
-
-
-
-
-    private void executeSelectedMenu() {
-        switch (selectedMenuIndex) {
-            case 0:
-                startGame();
-                break;
-            case 1:
-                changeMode();
-                break;
-            case 2:
-                stop();
-                break;
-            default:
-                break;
-        }
-    }
-
-
-
-    public void showMenu() {
-        flyCam.setEnabled(false);
-        guiNode.detachAllChildren();
-        menuVisible = true;
-        mainMenuUI.show(player1Name, player2Name, selectedMenuIndex);
-    }
-
-    public void showHud() {
-        guiNode.detachAllChildren();
-        menuVisible = false;
-        gameHudUI.show(player1Name, player2Name, Rule.player1Count, Rule.player2Count);
-    }
-
-    public void startGame() {
-        flyCam.setEnabled(true);
-        Rule.player1Count = 0;
-        Rule.player2Count = 0;
-        showHud();
-    }
-
-    public void changeMode() {
-        if (player1Name.equals("Joueur 1")) {
-            player1Name = "Joueur";
-            player2Name = "BOT";
-            ModeJeu=false;
-            ia.niveauIa(1);
-        } else {
-            player1Name = "Joueur 1";
-            player2Name = "Joueur 2";
-            ModeJeu=true;
-        }
-
-        if (menuVisible) {
-            showMenu();
-        } else {
-            showHud();
-        }
-    }
-
-    public void UpdateScore() {
-        if (!menuVisible){
-            showHud();
-            if (!ModeJeu){
-                if (Rule.player1Count==1){
-                    winHudUI.show();
-                    tournament.addLevel();
-                    tournament.updateLevel(ia,move);
-                    if (tournament.getLevel()==6){
-                        winHudUI.show();
-                        //stop();
-                    }
-                    Rule.player1Count=0;
-                    Rule.player2Count=0;
-                }
-                else if (Rule.player2Count==12){
-                    System.out.println("You lose");
-                    stop();
-                }
-            }
-        }
-    }
-
-
-
     public int getScreenWidth() {
         return cam.getWidth();
     }
@@ -422,54 +339,6 @@ public class App extends SimpleApplication implements ActionListener {
         if (!isPressed) {
             return;
         }
-
-        if (menuVisible) {
-            switch (name) {
-                case "MENU_UP":
-                    selectedMenuIndex--;
-                    if (selectedMenuIndex < 0) {
-                        selectedMenuIndex = 2;
-                    }
-                    showMenu();
-                    break;
-
-                case "MENU_DOWN":
-                    selectedMenuIndex++;
-                    if (selectedMenuIndex > 2) {
-                        selectedMenuIndex = 0;
-                    }
-                    showMenu();
-                    break;
-
-                case "SELECT":
-                    executeSelectedMenu();
-                    break;
-
-                case "CHANGE_PLAYERS":
-                    selectedMenuIndex = 1;
-                    changeMode();
-                    break;
-
-                case "BACK_OR_QUIT":
-                    stop();
-                    break;
-
-                default:
-                    break;
-            }
-        } else {
-            switch (name) {
-                case "CHANGE_PLAYERS":
-                    changeMode();
-                    break;
-
-                case "BACK_OR_QUIT":
-                    showMenu();
-                    break;
-
-                default:
-                    break;
-            }
-        }
+        uiManager.onAction(name);
     }
 }

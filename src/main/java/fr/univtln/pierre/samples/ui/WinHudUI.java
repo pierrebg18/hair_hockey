@@ -8,6 +8,7 @@ import fr.univtln.pierre.samples.App;
 
 public class WinHudUI {
 
+    
     private final App app;
     private final BitmapFont font;
 
