@@ -26,6 +26,7 @@ import com.jme3.input.controls.KeyTrigger;
 import fr.univtln.pierre.samples.game.Rule;
 import fr.univtln.pierre.samples.game.Tournament;
 import fr.univtln.pierre.samples.modele.*;
+import fr.univtln.pierre.samples.ui.WinHudUI;
 import lombok.Getter;
 import lombok.Setter;
 import fr.univtln.pierre.samples.game.Ia;
@@ -54,6 +55,7 @@ public class App extends SimpleApplication implements ActionListener {
 
     private fr.univtln.pierre.samples.ui.MainMenuUI mainMenuUI;
     private fr.univtln.pierre.samples.ui.GameHudUI gameHudUI;
+    private fr.univtln.pierre.samples.ui.WinHudUI winHudUI;
     private int selectedMenuIndex = 0;
     private String player1Name = "Joueur 1";
     private String player2Name = "Joueur 2";
@@ -234,6 +236,7 @@ public class App extends SimpleApplication implements ActionListener {
         // UI
         mainMenuUI = new fr.univtln.pierre.samples.ui.MainMenuUI(this);
         gameHudUI = new fr.univtln.pierre.samples.ui.GameHudUI(this);
+        winHudUI = new fr.univtln.pierre.samples.ui.WinHudUI(this);
 
         initKeys();
         showMenu();
@@ -385,12 +388,14 @@ public class App extends SimpleApplication implements ActionListener {
     public void UpdateScore() {
         if (!menuVisible){
             showHud();
-            if (ModeJeu){
+            if (!ModeJeu){
                 if (Rule.player1Count==1){
+                    winHudUI.show();
                     tournament.addLevel();
                     tournament.updateLevel(ia,move);
                     if (tournament.getLevel()==6){
-                        stop();
+                        winHudUI.show();
+                        //stop();
                     }
                     Rule.player1Count=0;
                     Rule.player2Count=0;
