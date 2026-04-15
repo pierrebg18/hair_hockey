@@ -37,6 +37,7 @@ public class GameScene {
     private float puckMaxHeight;
     // 0 en cours // -1 lose // 1 win
     private int gameOver=0; 
+    private int lvl=1;
 
     //va récupérer le mode présent dans UiManager
     private boolean modeJeu = true;
@@ -221,14 +222,33 @@ public class GameScene {
     public void updateGame() {
     Rule.endRound(puck, puckStartPosition);
     if (!modeJeu) {
-        if (Rule.player1Count == 1) {
+        if (Rule.player1Count == 12) {
             Tournament.addLevel();
-            Tournament.updateLevel(ia, move);
+            Tournament.addLevel();
+            Tournament.addLevel();
+            Tournament.addLevel();
+            Tournament.addLevel();
+            lvl=Tournament.updateLevel(ia, move);
             Rule.player1Count = 0;
             Rule.player2Count = 0;
+            //condition win
+            if (lvl==6){
+                this.gameOver=1;
+            }
         } else if (Rule.player2Count == 12) {
-            gameOver = -1;
+            this.gameOver = -1;
         }
+    }
+    else{
+        if (Rule.player1Count == 1) {
+             this.gameOver=1;
+             System.out.println("player 1 win");
+        }
+        else if (Rule.player1Count == 12) {
+             this.gameOver=1;
+             System.out.println("player 2 win");
+        }
+
     }
 }
 
@@ -237,6 +257,8 @@ public class GameScene {
         //gestion des déplacement du joueur
         compteurFrames++;
         move.simpleUpdateMove(tpf);
+
+        Rule.endRound(puck, puckStartPosition);
         move.resetPuckFall();
         move.bonusTouch();
         move.blockInCenter(tpf);
@@ -259,10 +281,8 @@ public class GameScene {
         Puck.pinPuckHeight(puck,puckMaxHeight);
         Puck.stabilizePuck(puck);
 
-        //gère l'update du score coté back
-        Rule.endRound(puck, puckStartPosition);
+        
         updateGame();
-        //gère l'update du score coté front ainsi que le round
-        return gameOver;
+        return this.gameOver;
     }
 }

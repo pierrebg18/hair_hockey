@@ -37,6 +37,7 @@ public class App extends SimpleApplication implements ActionListener {
     //private InputManager inputManager;
     private UiManager uiManager;
     private GameScene gameScene;
+    private int gameOver;
 
     /* 
     Lance le jeu
@@ -110,10 +111,18 @@ public class App extends SimpleApplication implements ActionListener {
      */
     @Override
     public void simpleUpdate(float tpf) {
-        gameScene.update(tpf);
-        // UI
-        //uiManager.isMultiplayerMode();
-        uiManager.refreshHud(Rule.player1Count,Rule.player2Count);
+        gameOver=gameScene.update(tpf);
+        if(gameOver<0){
+            uiManager.showLoseHud();
+        }
+        else if(gameOver>0){
+            uiManager.showWinHud();
+        }
+        else{
+            // UI
+            //uiManager.isMultiplayerMode();
+            uiManager.refreshHud(Rule.player1Count,Rule.player2Count);
+        }
     }
     
 

@@ -203,7 +203,7 @@ public class Move implements ActionListener{
                 myPaddle.getWidth(), myPaddle.getThickness(), myPaddle.getLenght());
         puckShape.collideWith(myPaddleBoundingBox, results);
         if (results.size() > 0) {
-            System.out.println("Touch with me");
+            //System.out.println("Touch with me");
             // how to react when a collision was detected
             CollisionResult closest = results.getClosestCollision();
 //            System.out.println("What was hit? " + closest.getGeometry().getName());
@@ -215,12 +215,12 @@ public class Move implements ActionListener{
                     opponentPaddle.getWidth(), opponentPaddle.getThickness(), opponentPaddle.getLenght());
             puckShape.collideWith(opponentPaddleBoundingBox, results);
             if (results.size() > 0) {
-                System.out.println("Touch with opponent");
+                //System.out.println("Touch with opponent");
                 // how to react when a collision was detected
                 CollisionResult closest = results.getClosestCollision();
-                System.out.println("What was hit? " + closest.getGeometry().getName());
-                System.out.println("Where was it hit? " + closest.getContactPoint());
-                System.out.println("Distance? " + closest.getDistance());
+                //System.out.println("What was hit? " + closest.getGeometry().getName());
+                //System.out.println("Where was it hit? " + closest.getContactPoint());
+                //System.out.println("Distance? " + closest.getDistance());
                 lastTouch = 1;
             }
         }

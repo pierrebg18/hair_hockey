@@ -9,7 +9,7 @@ public class Rule {
     
 
     public static void endRound(Puck puck, Vector3f puckStartPosition){
-        if (puck.getPuck_phy().getPhysicsLocation().y < -1f) {
+        if (puck.getPuck_phy().getPhysicsLocation().y < -0.5f) {
             if(puck.getPuck_phy().getPhysicsLocation().z < 1f){
                 player1Count +=1;
                 System.out.println("le joueur 1 à : "+player1Count+"pts");

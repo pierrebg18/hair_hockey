@@ -14,7 +14,7 @@ public class UiManager {
     private final MainMenuUI mainMenuUI;
     private final GameHudUI gameHudUI;
     private final WinHudUI winHudUI;
-    //private final LoseHudUI loseHudUI;
+    private final LoseHudUI loseHudUI;
 
     private int selectedMenuIndex = 0;
     private String player1Name = "Joueur 1";
@@ -27,7 +27,7 @@ public class UiManager {
         this.mainMenuUI = new MainMenuUI(app);
         this.gameHudUI = new GameHudUI(app);
         this.winHudUI = new WinHudUI(app);
-        //this.loseHudUI = new LoseHudUI(app);
+        this.loseHudUI = new LoseHudUI(app);
     }
 
     public boolean isMultiplayerMode() {
@@ -45,6 +45,16 @@ public class UiManager {
         app.getGuiNode().detachAllChildren();
         menuVisible = false;
         gameHudUI.show(player1Name, player2Name, Rule.player1Count, Rule.player2Count);
+    }
+
+    public void showWinHud(){
+        app.getGuiNode().detachAllChildren();
+        winHudUI.show();
+    }
+
+    public void showLoseHud(){
+        app.getGuiNode().detachAllChildren();
+        loseHudUI.show();
     }
 
     public void startGame() {

@@ -16,6 +16,7 @@ public class GameHudUI {
     }
 
     public void show(String player1, String player2, int score1, int score2) {
+        app.getGuiNode().detachAllChildren();
         int width = app.getScreenWidth();
         int height = app.getScreenHeight();
 
