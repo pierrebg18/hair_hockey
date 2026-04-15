@@ -69,12 +69,13 @@ public class App extends SimpleApplication implements ActionListener {
     @Override
     public void simpleInitApp() {
         placeCameraMySide();
+        //flyCam.setEnabled(false);
         Node pivot = new Node("pivot");
         rootNode.attachChild(pivot); // put this node in the scene
         move = new Move();
         move.setUpKeys(inputManager);
         ia = new Ia();
- 
+
 
 
         bulletAppState = new BulletAppState();
@@ -190,8 +191,9 @@ public class App extends SimpleApplication implements ActionListener {
         Geometry bonusGeometry = bonus.createGeometry();
         //myPaddle.createPhysic(paddleGeometry,bulletAppState);
         bonusGeometry.setMaterial(matBonus);
+        move.setBonus(bonus);
+        move.setPuckShape(puckGeometry);
 
-    
         // persons figures
         /*
         // me
@@ -213,6 +215,7 @@ public class App extends SimpleApplication implements ActionListener {
         pivot.attachChild(tableGeometry);
         pivot.attachChild(leftSideGeometry);
         pivot.attachChild(rightSideGeometry);
+        //pivot.attachChild(tableBaseGeometry);
         pivot.attachChild(puckGeometry);
         pivot.attachChild(paddleGeometry);
         pivot.attachChild(opponentPaddleGeometry);
@@ -280,6 +283,11 @@ public class App extends SimpleApplication implements ActionListener {
         //gestion des déplacement du joueur
         compteurFrames++;
         move.simpleUpdateMove(tpf);
+        move.simpleUpdateMoveOpponent(tpf);
+        move.resetPuckFall();
+        move.bonusTouch();
+        move.blockInCenter(tpf);
+        move.lastPlayerTouch();
         //System.out.println(tpf);
 
         if (compteurFrames>=20){ //temps de réaction

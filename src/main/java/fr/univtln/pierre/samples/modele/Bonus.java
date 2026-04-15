@@ -1,5 +1,6 @@
 package fr.univtln.pierre.samples.modele;
 
+import com.jme3.bounding.BoundingBox;
 import com.jme3.bullet.collision.shapes.BoxCollisionShape;
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.math.ColorRGBA;
@@ -20,6 +21,7 @@ public class Bonus {
     private Vector3f position;
     private CollisionShape bonusShape;
     private BonusType bonusType;
+    private BoundingBox bonusBoundingBox;
     //private RigidBodyControl bonus_phy;
 
     private Paddle myPaddle;
@@ -44,6 +46,10 @@ public class Bonus {
         this.puck = puck;
         this.table = table;
         this.generatePosition();
+        System.out.println(position.toString());
+        // Instantiate a BoundingBox with given center and extents
+        this.bonusBoundingBox = new BoundingBox(position, width, lenght, height);
+        System.out.println(bonusBoundingBox.toString());
     }
 
     // to adapt
@@ -63,9 +69,8 @@ public class Bonus {
         }
     }
 
-    // to adapt
     public void generatePosition(){
-        /*From documentation :
+        /* From documentation :
         nextFloat returns the next pseudorandom, uniformly distributed float value between 0.0 and 1.0 from this
         random number generator's sequence.
         */
@@ -79,9 +84,9 @@ public class Bonus {
         float z = randomGenerator.nextFloat();
         // if z < 0.5, we'll put bonus on positive z value, and negative if not
         if (z < 0.5)
-            z = z*table.getWidth();
+            z = z*table.getLenght();
         else
-            z = -z/2*table.getWidth();
+            z = -z/2*table.getLenght();
         position = new Vector3f(x,y,z);
     }
 
