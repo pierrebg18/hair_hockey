@@ -1,6 +1,5 @@
 package fr.univtln.pierre.samples;
 
-import com.bulletphysics.dynamics.RigidBody;
 import com.jme3.app.SimpleApplication;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.material.Material;
