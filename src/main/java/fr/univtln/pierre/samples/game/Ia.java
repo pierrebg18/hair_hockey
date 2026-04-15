@@ -13,8 +13,8 @@ public class Ia {
     private Paddle paddle;
     private Puck puck;
     private boolean back=false;
-    private float speed_x = 0f;
-    private float speed_z = 0f;
+    private float speed_x = 0.5f;
+    private float speed_z = 3f;
     
     public void niveauIa(int Niveau){
         if (Niveau==1){

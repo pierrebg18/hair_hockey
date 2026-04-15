@@ -19,7 +19,9 @@ import fr.univtln.pierre.samples.modele.Side;
 import fr.univtln.pierre.samples.modele.Table;
 import fr.univtln.pierre.samples.modele.TableBase;
 import fr.univtln.pierre.samples.ui.UiManager;
+import lombok.Setter;
 
+@Setter
 public class GameScene {
     private final AssetManager assetManager;
     private final BulletAppState bulletAppState;
@@ -33,6 +35,8 @@ public class GameScene {
     private Puck puck;
     private Vector3f puckStartPosition;
     private float puckMaxHeight;
+    // 0 en cours // -1 lose // 1 win
+    private int gameOver=0; 
 
     //va récupérer le mode présent dans UiManager
     private boolean modeJeu = true;
@@ -52,7 +56,7 @@ public class GameScene {
         move.setUpKeys(inputManager);
         ia = new Ia();
 
-
+        
 
         //light
         //LightManager.setUpLight(rootNode);
@@ -213,13 +217,26 @@ public class GameScene {
         puck.getPuck_phy().clearForces();
     }
 
+    
+    public void updateGame() {
+    Rule.endRound(puck, puckStartPosition);
+    if (!modeJeu) {
+        if (Rule.player1Count == 1) {
+            Tournament.addLevel();
+            Tournament.updateLevel(ia, move);
+            Rule.player1Count = 0;
+            Rule.player2Count = 0;
+        } else if (Rule.player2Count == 12) {
+            gameOver = -1;
+        }
+    }
+}
 
 
-    public void update(float tpf) {
+    public int update(float tpf) {
         //gestion des déplacement du joueur
         compteurFrames++;
         move.simpleUpdateMove(tpf);
-        move.simpleUpdateMoveOpponent(tpf);
         move.resetPuckFall();
         move.bonusTouch();
         move.blockInCenter(tpf);
@@ -244,8 +261,8 @@ public class GameScene {
 
         //gère l'update du score coté back
         Rule.endRound(puck, puckStartPosition);
-        
+        updateGame();
         //gère l'update du score coté front ainsi que le round
-        
+        return gameOver;
     }
 }

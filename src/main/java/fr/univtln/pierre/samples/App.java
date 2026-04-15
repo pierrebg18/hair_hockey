@@ -34,13 +34,13 @@ public class App extends SimpleApplication implements ActionListener {
     //////
 
     private BulletAppState bulletAppState;
-    private InputManager inputManager;
+    //private InputManager inputManager;
     private UiManager uiManager;
     private GameScene gameScene;
 
-    ////////
-    /// Lance le jeu
-    ////////
+    /* 
+    Lance le jeu
+    */
 
 
 
@@ -61,9 +61,14 @@ public class App extends SimpleApplication implements ActionListener {
     public void simpleInitApp() {
         placeCameraMySide();
         //flyCam.setEnabled(false);
+        bulletAppState = new BulletAppState();
+        stateManager.attach(bulletAppState);
+        
         gameScene = new GameScene(assetManager, bulletAppState, rootNode , inputManager);
         gameScene.init();
-
+        uiManager = new UiManager(this);
+        initKeys();
+        uiManager.showMenu();
         
     }
 
@@ -94,15 +99,7 @@ public class App extends SimpleApplication implements ActionListener {
     }
 
 
-    /*
-    Position bien le puck
-    */
-    private void resetPuck() {
-        puck.getPuck_phy().setLinearVelocity(Vector3f.ZERO);
-        puck.getPuck_phy().setAngularVelocity(Vector3f.ZERO);
-        puck.getPuck_phy().setPhysicsLocation(puckStartPosition.clone());
-        puck.getPuck_phy().clearForces();
-    }
+
 
 
 
@@ -115,11 +112,8 @@ public class App extends SimpleApplication implements ActionListener {
     public void simpleUpdate(float tpf) {
         gameScene.update(tpf);
         // UI
-        uiManager = new UiManager(this, ia, move);
-        initKeys();
-        uiManager.showMenu();
         //uiManager.isMultiplayerMode();
-        uiManager.updateScore();
+        uiManager.refreshHud(Rule.player1Count,Rule.player2Count);
     }
     
 

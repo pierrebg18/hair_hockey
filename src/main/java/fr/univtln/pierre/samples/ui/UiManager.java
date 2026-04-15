@@ -9,8 +9,6 @@ import fr.univtln.pierre.samples.game.Tournament;
 public class UiManager {
 
     private final App app;
-    private final Ia ia;
-    private final Move move;
 
     //le final pour plus de sécurité
     private final MainMenuUI mainMenuUI;
@@ -24,10 +22,8 @@ public class UiManager {
     private boolean menuVisible = true;
     private boolean multiplayerMode = true;
 
-    public UiManager(App app, Ia ia, Move move) {
+    public UiManager(App app) {
         this.app = app;
-        this.ia = ia;
-        this.move = move;
         this.mainMenuUI = new MainMenuUI(app);
         this.gameHudUI = new GameHudUI(app);
         this.winHudUI = new WinHudUI(app);
@@ -55,6 +51,7 @@ public class UiManager {
         app.getFlyByCamera().setEnabled(true);
         Rule.player1Count = 0;
         Rule.player2Count = 0;
+        app.getGameScene().setModeJeu(multiplayerMode);
         showHud();
     }
 
@@ -63,7 +60,6 @@ public class UiManager {
             player1Name = "Joueur";
             player2Name = "BOT";
             multiplayerMode = false;
-            ia.niveauIa(1);
         } else {
             player1Name = "Joueur 1";
             player2Name = "Joueur 2";
@@ -77,24 +73,9 @@ public class UiManager {
         }
     }
 
-    public void updateScore() {
+    public void refreshHud(int score1, int score2) {
         if (!menuVisible) {
-            showHud();
-            if (!multiplayerMode) {
-                if (Rule.player1Count == 1) {
-                    winHudUI.show();
-                    Tournament.addLevel();
-                    Tournament.updateLevel(ia, move);
-                    if (Tournament.getLevel() == 6) {
-                        winHudUI.show();
-                    }
-                    Rule.player1Count = 0;
-                    Rule.player2Count = 0;
-                } else if (Rule.player2Count == 12) {
-                    System.out.println("You lose");
-                    app.stop();
-                }
-            }
+            gameHudUI.show(player1Name, player2Name, score1, score2);
         }
     }
 
