@@ -1,12 +1,15 @@
 package fr.univtln.pierre.samples.modele;
 
+import com.jme3.asset.AssetManager;
 import com.jme3.bounding.BoundingBox;
 import com.jme3.bullet.collision.shapes.BoxCollisionShape;
 import com.jme3.bullet.collision.shapes.CollisionShape;
+import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.shape.Box;
+import fr.univtln.pierre.samples.game.Move;
 import lombok.Getter;
 
 import java.util.Random;
@@ -28,13 +31,13 @@ public class Bonus {
     private Paddle opponentPaddle;
     private Puck puck;
     private Table table;
+    private Move move;
 
     private static ColorRGBA colorPlus = ColorRGBA.Green;
-    private static ColorRGBA speedUp = ColorRGBA.Yellow;
     private static ColorRGBA colorMinus = ColorRGBA.Red;
     private static Random randomGenerator = new Random();
 
-    public Bonus(float width, BonusType bonusType, Paddle myPaddle, Paddle opponentPaddle, Puck puck, Table table) {
+    public Bonus(float width, BonusType bonusType, Paddle myPaddle, Paddle opponentPaddle, Puck puck, Table table ,Move move) {
         this.width = width;
         this.lenght = width;
         this.height = width;
@@ -49,23 +52,26 @@ public class Bonus {
         System.out.println(position.toString());
         // Instantiate a BoundingBox with given center and extents
         this.bonusBoundingBox = new BoundingBox(position, width, lenght, height);
+        this.move = move;
         System.out.println(bonusBoundingBox.toString());
     }
 
     // to adapt
-    public void defineColor(){
-        switch(bonusType){
+    public void defineColor() {
+        switch (bonusType) {
             case SIZE_PLUS:
-                case PADDLE_PLUS:
+            case PADDLE_PLUS:
                 color = colorPlus;
                 break;
-                case  SIZE_MINUS:
-                case PADDLE_MINUS:
-            case SHOT_ON_GOAL:
+
+            case SIZE_MINUS:
+            case PADDLE_MINUS:
                 color = colorMinus;
                 break;
-                case SPEED_PLUS:
-                    color = speedUp;
+
+
+            default:
+                throw new IllegalStateException("BonusType non géré : " + bonusType);
         }
     }
 
@@ -96,5 +102,50 @@ public class Bonus {
         bonus.setLocalTranslation(position);
         CollisionShape collisionShape = new BoxCollisionShape(new Vector3f(width, height, lenght));
         return bonus;
+    }
+
+
+    public void applyBonus() {
+        switch (bonusType) {
+            case SIZE_PLUS:
+                puck.applyTemporaryScale(1.2f, 10f); // augmente de 20%
+                System.out.println("SIZE_PLUS");
+                break;
+
+            case SIZE_MINUS:
+                puck.applyTemporaryScale(0.8f, 10f); // diminue de 20%
+                System.out.println("SIZE_MINUS");
+                break;
+
+            case PADDLE_PLUS:
+                if (move.getLastTouch() == 0) {
+                    myPaddle.applyTemporaryWidthScale(1.1f, 20f);
+                    System.out.println("PADDLE_PLUS sur myPaddle");
+                } else {
+                    opponentPaddle.applyTemporaryWidthScale(1.1f, 20f);
+                    System.out.println("PADDLE_PLUS sur opponentPaddle");
+                }
+                break;
+
+            case PADDLE_MINUS:
+                if (move.getLastTouch() == 0) {
+                    opponentPaddle.applyTemporaryWidthScale(0.9f, 20f);
+                    System.out.println("PADDLE_MINUS sur opponentPaddle");
+                } else {
+                    myPaddle.applyTemporaryWidthScale(0.9f, 20f);
+                    System.out.println("PADDLE_MINUS sur myPaddle");
+                }
+                break;
+        }
+    }
+
+
+    public void createBonusCompleteVisual( AssetManager assetManager ){
+        Material matBonus = LightManager.createMaterial(assetManager, this.getColor());
+        Geometry bonusGeometry = this.createGeometry();
+        bonusGeometry.setMaterial(matBonus);
+
+
+
     }
 }
