@@ -9,6 +9,7 @@ import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 
+import com.jme3.scene.Spatial;
 import fr.univtln.pierre.samples.modele.Bonus;
 import fr.univtln.pierre.samples.modele.BonusType;
 import fr.univtln.pierre.samples.modele.InvisibleWall;
@@ -19,6 +20,7 @@ import fr.univtln.pierre.samples.modele.Side;
 import fr.univtln.pierre.samples.modele.Table;
 import fr.univtln.pierre.samples.modele.TableBase;
 import fr.univtln.pierre.samples.ui.UiManager;
+import lombok.Getter;
 import lombok.Setter;
 
 @Setter
@@ -27,6 +29,7 @@ public class GameScene {
     private final BulletAppState bulletAppState;
     private final Node rootNode;
     private final InputManager inputManager;
+    @Getter
     private Move move;
     private Ia ia;
     private Vector3f Last_position;
@@ -185,7 +188,8 @@ public class GameScene {
         opponent.scale(4f, 4f, 4f);
         //opponent.rotate(0.0f, 1.5f, 0.0f);
         opponent.setLocalTranslation(0.0f, 0.0f, -table.getLenght()-2f);
-         */
+        */
+
 
         // to display collision shapes
         // bulletAppState.setDebugEnabled(true);
@@ -220,41 +224,39 @@ public class GameScene {
 
     
     public void updateGame() {
-    Rule.endRound(puck, puckStartPosition);
-    if (!modeJeu) {
-        if (Rule.player1Count == 12) {
-            //Tournament.addLevel();
-            //Tournament.addLevel();
-            //Tournament.addLevel();
-            //Tournament.addLevel();
-            Tournament.addLevel();
-            lvl=Tournament.updateLevel(ia, move);
-            Rule.player1Count = 0;
-            Rule.player2Count = 0;
-            //condition win
-            if (lvl==6){
-                this.gameOver=1;
+        Rule.endRound(puck, puckStartPosition);
+        if (!modeJeu) {
+            if (Rule.player1Count == 12) {
+                //Tournament.addLevel();
+                //Tournament.addLevel();
+                //Tournament.addLevel();
+                //Tournament.addLevel();
+                Tournament.addLevel();
+                lvl = Tournament.updateLevel(ia, move);
+                Rule.player1Count = 0;
+                Rule.player2Count = 0;
+                //condition win
+                if (lvl == 6) {
+                    this.gameOver = 1;
+                }
+            } else if (Rule.player2Count == 12) {
+                this.gameOver = -1;
             }
-        } else if (Rule.player2Count == 12) {
-            this.gameOver = -1;
+        }
+        else {
+            if (Rule.player1Count == 12) {
+                this.gameOver = 1;
+                System.out.println("player 1 win");
+            } else if (Rule.player1Count == 12) {
+                this.gameOver = 1;
+                System.out.println("player 2 win");
+            }
         }
     }
-    else{
-        if (Rule.player1Count == 12) {
-             this.gameOver=1;
-             System.out.println("player 1 win");
-        }
-        else if (Rule.player1Count == 12) {
-             this.gameOver=1;
-             System.out.println("player 2 win");
-        }
-
-    }
-}
 
 
     public int update(float tpf) {
-        //gestion des déplacement du joueur
+        //gestion des déplacements du joueur
         compteurFrames++;
         move.simpleUpdateMove(tpf);
 
@@ -263,13 +265,14 @@ public class GameScene {
         move.bonusTouch();
         move.blockInCenter(tpf);
         move.lastPlayerTouch();
+        move.notMoving(tpf);
         //System.out.println(tpf);
 
         if (compteurFrames>=20){ //temps de réaction
-        //gestion des déplacement de l'IA
-        ia.simpleUpdateIaMove(tpf,this.Last_position);
-        this.Last_position = puck.getPuck_phy().getPhysicsLocation().clone();
-        compteurFrames=0;
+            //gestion des déplacements de l'IA
+            ia.simpleUpdateIaMove(tpf,this.Last_position);
+            this.Last_position = puck.getPuck_phy().getPhysicsLocation().clone();
+            compteurFrames=0;
         }
 
         move.simpleUpdateMove(tpf);

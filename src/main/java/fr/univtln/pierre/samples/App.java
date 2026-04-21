@@ -5,6 +5,7 @@ import com.jme3.bullet.BulletAppState;
 import com.jme3.system.AppSettings;
 import com.jme3.input.controls.ActionListener;
 
+import fr.univtln.pierre.samples.game.Move;
 import fr.univtln.pierre.samples.game.Rule;
 import fr.univtln.pierre.samples.ui.UiManager;
 import lombok.Getter;
@@ -69,7 +70,7 @@ public class App extends SimpleApplication implements ActionListener {
 
 
     /*
-    Réactualise a chaque frame
+    Réactualise à chaque frame
      */
     @Override
     public void simpleUpdate(float tpf) {
