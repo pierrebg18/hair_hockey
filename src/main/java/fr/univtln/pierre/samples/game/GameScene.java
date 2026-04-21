@@ -129,7 +129,6 @@ public class GameScene {
         opponentPaddleGeometry.setMaterial(matPaddle);
         opponentPaddle.createPhysic(opponentPaddleGeometry,bulletAppState);
         ia.setPaddle(opponentPaddle);
-        opponentPaddle.createPhysic(opponentPaddleGeometry, bulletAppState);
 
         move.setpaddle(myPaddle, opponentPaddle, puck);
 
@@ -192,7 +191,7 @@ public class GameScene {
 
 
         // to display collision shapes
-        // bulletAppState.setDebugEnabled(true);
+        bulletAppState.setDebugEnabled(true);
 
         pivot.attachChild(tableGeometry);
         pivot.attachChild(leftSideGeometry);

@@ -97,7 +97,7 @@ public class Puck {
     }
 
 
-    public static void pinPuckHeight( Puck puck, Float puckMaxHeight) {
+    public static void pinPuckHeight(Puck puck, Float puckMaxHeight) {
         Vector3f pos = puck.getPuck_phy().getPhysicsLocation();
 
         if (pos.y > puckMaxHeight) {
@@ -109,6 +109,12 @@ public class Puck {
                 vel.y = 0f;
                 puck.getPuck_phy().setLinearVelocity(vel);
             }
+        }
+
+        // protect puck from being stuck into table in case of bug
+        float tableLength = puck.getTable().getLenght();
+        if (pos.y < 2*puck.getHeight()-0.5 & pos.z < tableLength & pos.z > -tableLength) {
+            puck.resetPuck(0);
         }
     }
 
