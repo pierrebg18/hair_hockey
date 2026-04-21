@@ -137,7 +137,6 @@ public class GameScene {
         opponentPaddleGeometry.setMaterial(matPaddle);
         opponentPaddle.createPhysic(opponentPaddleGeometry,bulletAppState);
         ia.setPaddle(opponentPaddle);
-        opponentPaddle.createPhysic(opponentPaddleGeometry, bulletAppState);
 
         move.setpaddle(myPaddle, opponentPaddle, puck);
 
