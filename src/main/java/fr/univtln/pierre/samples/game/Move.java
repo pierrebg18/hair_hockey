@@ -157,9 +157,8 @@ public class Move implements ActionListener{
     public void resetPuckFall(){
         if (puck.getPuck_phy().getPhysicsLocation().y < -0.5){
             // put on side of that who lost
-            System.out.println(puck.getPuck_phy().getPhysicsLocation().z);
+            System.out.println("Reset puck fall" + puck.getPuck_phy().getPhysicsLocation().z);
             puck.resetPuck(puck.getPuck_phy().getPhysicsLocation().z>0?0:1);
-            //System.out.println("Last touch :" + lastTouch);
         }
     }
 
@@ -204,6 +203,21 @@ public class Move implements ActionListener{
         }
         else timeInCenter = 0;
         //System.out.println("Time in center: " + timeInCenter);
+    }
+
+    private int timeNoMove = 0;
+    public void notMoving(float tpf){
+        Vector3f velocity = puck.getPuck_phy().getLinearVelocity();
+        float minVelocity = 0.1f;
+        if (velocity.x <= minVelocity &&  velocity.y <= minVelocity && velocity.z <= minVelocity) {
+            timeNoMove += 1;
+            if (timeNoMove > 360){
+                System.out.println("Was not moving for a long");
+                puck.resetPuck(0); // put on my side in this case
+                timeNoMove = 0;
+            }
+        }
+        else timeNoMove = 0;
     }
 
     public void lastPlayerTouch(){

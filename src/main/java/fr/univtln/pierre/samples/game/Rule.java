@@ -27,7 +27,7 @@ public class Rule {
         puck.getPuck_phy().setAngularVelocity(Vector3f.ZERO);
         puck.getPuck_phy().clearForces();
 
-        puck.putOnMySide();
+        puck.resetPuck(puck.getPuck_phy().getPhysicsLocation().z>0?0:1);
         puck.getPuck_phy().setPhysicsLocation(puck.getPosition().clone());
     }
 }
