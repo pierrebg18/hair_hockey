@@ -42,6 +42,13 @@ public class GameScene {
     //va récupérer le mode présent dans UiManager
     private boolean modeJeu = true;
 
+    // détéction des touches de la balle
+    private Paddle myPaddle;
+    private Paddle opponentPaddle;
+
+    //gestion des bonus :
+    private BonusManager bonusManager;
+
     public GameScene(AssetManager assetManager, BulletAppState bulletAppState, Node rootNode,InputManager inputManager) {
         this.assetManager = assetManager;
         this.bulletAppState = bulletAppState;
@@ -113,15 +120,16 @@ public class GameScene {
         puckStartPosition = new Vector3f(0f, 0.2f, 0f);
         puckMaxHeight = puckStartPosition.y + 0.05f;
 
+
         // my paddle
-        Paddle myPaddle = new Paddle(0.4F, 0.2F, 0.1F, ColorRGBA.Gray);
+        myPaddle = new Paddle(0.4F, 0.2F, 0.1F, ColorRGBA.Gray);
         Material matPaddle = LightManager.createMaterial(assetManager,myPaddle.getColor());
         Geometry paddleGeometry = myPaddle.createGeometryMy(table);
         myPaddle.createPhysic(paddleGeometry,bulletAppState);
         paddleGeometry.setMaterial(matPaddle);
 
         // opponent's paddle
-        Paddle opponentPaddle = new Paddle(0.4F, 0.2F, 0.1F, ColorRGBA.Gray);
+        opponentPaddle = new Paddle(0.4F, 0.2F, 0.1F, ColorRGBA.Gray);
         Geometry opponentPaddleGeometry = opponentPaddle.createGeometryOpponent(table);
         opponentPaddleGeometry.setMaterial(matPaddle);
         opponentPaddle.createPhysic(opponentPaddleGeometry,bulletAppState);
@@ -164,13 +172,28 @@ public class GameScene {
         puck.getPuck_phy().setCollideWithGroups(groupPaddle); // collision with puddle, but not with invisible walls
 
         // test of bonus
-        Bonus bonus = new Bonus(0.2f, BonusType.PADDLE_MINUS, myPaddle, opponentPaddle, puck, table);
-        Material matBonus = LightManager.createMaterial(assetManager, bonus.getColor());
-        Geometry bonusGeometry = bonus.createGeometry();
-        //myPaddle.createPhysic(paddleGeometry,bulletAppState);
-        bonusGeometry.setMaterial(matBonus);
-        move.setBonus(bonus);
-        move.setPuckShape(puckGeometry);
+
+        bonusManager = new BonusManager(
+                assetManager,
+                pivot,
+                table,
+                myPaddle,
+                opponentPaddle,
+                puck,
+                move,
+                puckGeometry
+        );
+        bonusManager.initBonus();
+
+//        Bonus bonus = new Bonus(0.2f, BonusType.PADDLE_MINUS, myPaddle, opponentPaddle, puck, table);
+//        Material matBonus = LightManager.createMaterial(assetManager, bonus.getColor());
+//        Geometry bonusGeometry = bonus.createGeometry();
+//        //myPaddle.createPhysic(paddleGeometry,bulletAppState);
+//        bonusGeometry.setMaterial(matBonus);
+//        move.setBonus(bonus);
+//        move.setPuckShape(puckGeometry);
+//        move.setBonusGeometry(bonusGeometry);
+//        move.setPivot(pivot);
 
         // persons figures
         /*
@@ -197,7 +220,7 @@ public class GameScene {
         pivot.attachChild(puckGeometry);
         pivot.attachChild(paddleGeometry);
         pivot.attachChild(opponentPaddleGeometry);
-        pivot.attachChild(bonusGeometry);
+        //pivot.attachChild(bonusGeometry);
         //pivot.attachChild(me);
         //pivot.attachChild(opponent);
 
@@ -261,9 +284,14 @@ public class GameScene {
         Rule.endRound(puck, puckStartPosition);
         move.resetPuckFall();
         move.bonusTouch();
+        bonusManager.update(tpf);
         move.blockInCenter(tpf);
         move.lastPlayerTouch();
         //System.out.println(tpf);
+
+        puck.updateBonus(tpf);
+        myPaddle.updateBonus(tpf);
+        opponentPaddle.updateBonus(tpf);
 
         if (compteurFrames>=20){ //temps de réaction
         //gestion des déplacement de l'IA

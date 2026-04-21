@@ -28,11 +28,15 @@ public class Move implements ActionListener{
     private boolean leftOp = false, rightOp = false, upOp = false, downOp = false;
     private Paddle myPaddle;
     private Paddle opponentPaddle;
-    private Puck puck;
+
     private Bonus bonus = null;
     private Geometry puckShape;
     private int lastTouch = 0; // 0 for me, 1 for opponent
     private float speed = 3f ;
+    //gestion binnus :
+    private Puck puck;
+    private Geometry bonusGeometry;
+    private com.jme3.scene.Node pivot;
 
     public Move(){
     }
@@ -166,13 +170,19 @@ public class Move implements ActionListener{
             bonus.getBonusBoundingBox().collideWith(puckShape, results);
             // Use the results
             if (results.size() > 0) {
-                // how to react when a collision was detected
                 CollisionResult closest = results.getClosestCollision();
                 System.out.println("What was hit? " + closest.getGeometry().getName());
                 System.out.println("Where was it hit? " + closest.getContactPoint());
                 System.out.println("Distance? " + closest.getDistance());
-            } else {
-                // how to react when no collision occurred
+
+                bonus.applyBonus();
+
+                if (pivot != null && bonusGeometry != null) {
+                    pivot.detachChild(bonusGeometry);
+                }
+
+                bonus = null;
+                bonusGeometry = null;
             }
         }
     }

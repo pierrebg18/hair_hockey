@@ -19,20 +19,26 @@ public class Puck {
     private int axisSamples; // Number of triangle samples along the axis
     private int radialSamples; // Number of triangle samples along the radial.
     private float radius;
+    private float baseRadius;
     private float height;
     private Vector3f position;
     private ColorRGBA color;
     private Table table;
     private RigidBodyControl puck_phy;
+    private float bonusTimer = 0f;
+    private float bonusScale = 1f;
+    private Geometry puckGeometry;
 
     public Puck(int axisSamples, int radialSamples, float radius, float height, ColorRGBA color, Table table) {
         this.axisSamples = axisSamples;
         this.radialSamples = radialSamples;
         this.radius = radius;
+        this.baseRadius = radius;
         this.height = height;
         this.color = color;
         this.table = table;
         this.position = table.getPosition().add(0, 2*height, 0);
+
     }
 
     public Geometry createGeometry(){
@@ -44,6 +50,11 @@ public class Puck {
         //rotate the cylinder to be vertical
         roll90x.fromAngleAxis(FastMath.PI/2, new Vector3f(1,0,0));
         puck.setLocalRotation(roll90x);
+
+        this.puckGeometry = puck;
+
+        System.out.println("createGeometry -> this = " + this);
+        System.out.println("createGeometry -> puckGeometry enregistrée = " + this.puckGeometry);
         return puck;
     }
 
@@ -123,4 +134,41 @@ public class Puck {
 
         puck.getPuck_phy().setAngularVelocity(angularVel);
     }
+
+
+
+    // gérer les modifications de puck pour bonus
+
+    public void applyTemporaryScale(float scale, float duration) {
+        this.bonusScale = scale;
+        this.bonusTimer = duration;
+
+        System.out.println("hello");
+        System.out.println("applyTemporaryScale -> this = " + this);
+        System.out.println("applyTemporaryScale -> puckGeometry avant update = " + puckGeometry);
+        updateScale();
+    }
+
+    public void updateBonus(float tpf) {
+        if (bonusTimer > 0f) {
+            bonusTimer -= tpf;
+            if (bonusTimer <= 0f) {
+                bonusScale = 1f;
+                bonusTimer = 0f;
+                updateScale();
+            }
+        }
+    }
+
+    private void updateScale() {
+        this.radius = baseRadius * bonusScale;
+
+        if (puckGeometry != null) {
+            System.out.println("puckGeometry: " + puckGeometry);
+            puckGeometry.setLocalScale(bonusScale);
+        }
+        System.out.println("BONUS PUCK APPLIQUE, scale = " + bonusScale);
+    }
+
+
 }

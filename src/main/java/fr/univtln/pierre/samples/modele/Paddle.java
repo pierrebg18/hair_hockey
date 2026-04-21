@@ -13,17 +13,24 @@ import lombok.Setter;
 @Setter
 public class Paddle {
     private float width;
+    private float baseWidth;
     private float lenght;
     private float thickness;
     private ColorRGBA color;
     private Vector3f position;
     private RigidBodyControl paddle_phy;
 
+    private float bonusTimer = 0f;
+    private float widthScale = 1f;
+    private Geometry paddleGeometry;
+
     public Paddle(float width, float length, float thickness, ColorRGBA color) {
         this.width = width;
+        this.baseWidth = width;
         this.lenght = length;
         this.thickness = thickness;
         this.color = color;
+
     }
 
     public Geometry createGeometryMy(Table table){
@@ -31,6 +38,8 @@ public class Paddle {
         Geometry paddle = new Geometry("Box", box);
         position = table.getPosition().add(table.getWidth()/2, table.getThickness()+thickness, table.getLenght()-lenght);
         paddle.setLocalTranslation(position);
+
+        this.paddleGeometry = paddle;
         return paddle;
     }
 
@@ -39,6 +48,8 @@ public class Paddle {
         Geometry paddle = new Geometry("Box", box);
         position = table.getPosition().add(-table.getWidth()/2, table.getThickness()+thickness, -table.getLenght()+lenght);
         paddle.setLocalTranslation(position);
+
+        this.paddleGeometry = paddle;
         return paddle;
     }
 
@@ -58,5 +69,38 @@ public class Paddle {
     public void setposition(Vector3f vector3f){
         this.position=vector3f;
     }
+
+
+    // méthodes pour gérer les bonus
+
+    public void applyTemporaryWidthScale(float scale, float duration) {
+        this.widthScale = scale;
+        this.bonusTimer = duration;
+        updateScale();
+    }
+
+    public void updateBonus(float tpf) {
+        if (bonusTimer > 0f) {
+            bonusTimer -= tpf;
+            if (bonusTimer <= 0f) {
+                widthScale = 1f;
+                bonusTimer = 0f;
+                updateScale();
+            }
+        }
+    }
+
+    private void updateScale() {
+        this.width = baseWidth * widthScale;
+
+        if (paddleGeometry != null) {
+            System.out.println("paddleGeometry: " + paddleGeometry);
+            paddleGeometry.setLocalScale(widthScale, 1f, 1f);
+        }
+
+        System.out.println("BONUS PADDLE APPLIQUE, scale = " + widthScale);
+    }
+
+
 
 }

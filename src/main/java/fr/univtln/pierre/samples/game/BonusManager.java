@@ -70,7 +70,7 @@ public class BonusManager {
     private void spawnRandomBonus() {
         BonusType randomType = randomBonusType();
 
-        currentBonus = new Bonus(0.2f, randomType, myPaddle, opponentPaddle, puck, table);
+        currentBonus = new Bonus(0.2f, randomType, myPaddle, opponentPaddle, puck, table,move);
 
         Material matBonus = LightManager.createMaterial(assetManager, currentBonus.getColor());
         currentBonusGeometry = currentBonus.createGeometry();
