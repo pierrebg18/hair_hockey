@@ -191,7 +191,7 @@ public class GameScene {
 
 
         // to display collision shapes
-        bulletAppState.setDebugEnabled(true);
+        // bulletAppState.setDebugEnabled(true);
 
         pivot.attachChild(tableGeometry);
         pivot.attachChild(leftSideGeometry);
