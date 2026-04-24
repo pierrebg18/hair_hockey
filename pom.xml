@@ -11,14 +11,16 @@
   <!-- FIXME change it to the project's website -->
   <url>http://www.example.com</url>
 
-  <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <maven.compiler.release>17</maven.compiler.release>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.release>17</maven.compiler.release>
 
-      <!-- JMonkeyEngine -->
-      <jme3_g>org.jmonkeyengine</jme3_g>
-      <jme3_v>3.8.1-stable</jme3_v>
-  </properties>
+        <!-- JMonkeyEngine -->
+        <jme3_g>org.jmonkeyengine</jme3_g>
+        <jme3_v>3.8.1-stable</jme3_v>
+        <maven.compiler.source>21</maven.compiler.source>
+        <maven.compiler.target>21</maven.compiler.target>
+    </properties>
 
   <dependencyManagement>
     <dependencies>
@@ -167,6 +169,15 @@
           <artifactId>maven-project-info-reports-plugin</artifactId>
           <version>3.6.1</version>
         </plugin>
+
+          <plugin>
+              <groupId>org.codehaus.mojo</groupId>
+              <artifactId>exec-maven-plugin</artifactId>
+              <version>3.1.0</version>
+              <configuration>
+                  <mainClass>fr.univtln.pierre.samples.App</mainClass>
+              </configuration>
+          </plugin>
       </plugins>
     </pluginManagement>
   </build>
