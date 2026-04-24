@@ -124,7 +124,7 @@ public class Puck {
 
         // protect puck from being stuck into table in case of bug
         float tableLength = puck.getTable().getLenght();
-        if (pos.y < 2*puck.getHeight()-0.5 & pos.z < tableLength & pos.z > -tableLength) {
+        if (pos.y < 2*puck.getHeight()-0.2 & pos.z < tableLength & pos.z > -tableLength) {
             puck.resetPuck(0);
         }
     }
