@@ -13,7 +13,7 @@ public class Camera {
 
     public void placeCameraMySide() {
         camera.setLocation(new Vector3f(0, 4f, 9f));
-        camera.lookAt(new Vector3f(0, 0, 0), new Vector3f(0, 1, 1));
+        camera.lookAt(new Vector3f(0, 0, 0), new Vector3f(0, 2, -5));
     }
 
     public void placeCameraOpponentSide() {
