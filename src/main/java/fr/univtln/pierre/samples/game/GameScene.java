@@ -248,7 +248,7 @@ public class GameScene {
     public void updateGame() {
         Rule.endRound(puck, puckStartPosition);
         if (!modeJeu) {
-            if (Rule.player1Count == 12) {
+            if (Rule.player1Count == 1) {
                 //Tournament.addLevel();
                 //Tournament.addLevel();
                 //Tournament.addLevel();

@@ -15,27 +15,33 @@ public class Ia {
     private boolean back=false;
     private float speed_x = 0.5f;
     private float speed_z = 3f;
+    private float bad_position = 0; // compris entre 0 et 1 sert a rendre l'ia pas parfaite
     
     public void niveauIa(int Niveau){
         if (Niveau==1){
         setSpeed_x(0.5f);
         setSpeed_z(3f);
+        setBad_position(0.5f);
         }
         else if(Niveau==2){
         setSpeed_x(1f);
         setSpeed_z(3f);
+        setBad_position(0.5f);
         }
         else if(Niveau==3){
         setSpeed_x(1.5f);
         setSpeed_z(3f);
+        setBad_position(0.5f);
         }
         else if(Niveau==4){
         setSpeed_x(2f);
         setSpeed_z(5f);
+        setBad_position(0.4f);
         }
         else if(Niveau==5){
         setSpeed_x(2.5f);
         setSpeed_z(8f);
+        setBad_position(0.35f);
         }
         // pour les tests
         else if(Niveau==66){
@@ -57,12 +63,24 @@ public class Ia {
             Vector3f paddleCoord = paddle.getPaddle_phy().getPhysicsLocation();
             Vector3f puckCoord = puck.getPuck_phy().getPhysicsLocation();
 
-            if (paddleCoord.x > puckCoord.x) {
+            //en x
+
+            double r = Math.random();
+            if (r < bad_position) {
+            // pour le rendre moins parfait
+                if (Math.random() < 0.5) {
+                    velocity.x += -speed_x; // va vers la gauche
+                } else {
+                    velocity.x += speed_x;  // va vers la droite
+                }
+            }
+            else if (paddleCoord.x > puckCoord.x) {
                 velocity.x -= speed_x;
             } else {
                 velocity.x += speed_x;
             }
             
+            //en z pour taper
             if (puckCoord.z < -1.5f){
                 velocity.z += speed_z;
                 back=true;
