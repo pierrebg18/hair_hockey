@@ -44,7 +44,7 @@ public class UiManager {
     public void showHud() {
         app.getGuiNode().detachAllChildren();
         menuVisible = false;
-        gameHudUI.show(player1Name, player2Name, Rule.player1Count, Rule.player2Count);
+        gameHudUI.show(player1Name, player2Name, Rule.player1Count, Rule.player2Count,Tournament.getLevel());
     }
 
     public void showWinHud(){
@@ -85,7 +85,7 @@ public class UiManager {
 
     public void refreshHud(int score1, int score2) {
         if (!menuVisible) {
-            gameHudUI.show(player1Name, player2Name, score1, score2);
+            gameHudUI.show(player1Name, player2Name, score1, score2,Tournament.getLevel());
         }
     }
 

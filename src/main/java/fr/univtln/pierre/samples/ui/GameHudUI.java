@@ -15,7 +15,7 @@ public class GameHudUI {
         this.font = app.getAssetManager().loadFont("Interface/Fonts/Default.fnt");
     }
 
-    public void show(String player1, String player2, int score1, int score2) {
+    public void show(String player1, String player2, int score1, int score2,int round) {
         app.getGuiNode().detachAllChildren();
         int width = app.getScreenWidth();
         int height = app.getScreenHeight();
@@ -48,6 +48,13 @@ public class GameHudUI {
         score.setLocalTranslation(width / 2f - score.getLineWidth() / 2f, height - 70f, 0);
         app.getGuiNode().attachChild(score);
 
+
+        BitmapText roundText = new BitmapText(font);
+        roundText.setSize(font.getCharSet().getRenderedSize() * 1.0f);
+        roundText.setText("ROUND " + round);
+        roundText.setColor(ColorRGBA.White);
+        roundText.setLocalTranslation(width / 2f - roundText.getLineWidth() / 2f, height - 110f, 0);
+        app.getGuiNode().attachChild(roundText);
 
     }
 }
