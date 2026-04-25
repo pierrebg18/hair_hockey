@@ -1,6 +1,7 @@
 package fr.univtln.pierre.samples.modele;
 
 import com.jme3.bullet.BulletAppState;
+import com.jme3.bullet.collision.shapes.BoxCollisionShape;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
@@ -97,6 +98,13 @@ public class Paddle {
             System.out.println("paddleGeometry: " + paddleGeometry);
             paddleGeometry.setLocalScale(widthScale, 1f, 1f);
         }
+        if (paddle_phy != null) {
+            paddle_phy.setCollisionShape(
+                    new BoxCollisionShape(new Vector3f(width, thickness, lenght))
+            );
+        }
+
+
 
         System.out.println("BONUS PADDLE APPLIQUE, scale = " + widthScale);
     }

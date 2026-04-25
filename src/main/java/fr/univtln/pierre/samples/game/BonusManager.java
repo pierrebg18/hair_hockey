@@ -22,7 +22,7 @@ public class BonusManager {
 
     //respawn
 
-    private float respawnTimer = 0f;
+    private float respawnTimer = 10f;
     private boolean waitingForRespawn = false;
 
     public BonusManager(AssetManager assetManager,
