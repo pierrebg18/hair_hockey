@@ -8,6 +8,7 @@ import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
+import com.jme3.texture.Texture;
 
 
 public class LightManager {
@@ -38,6 +39,21 @@ public class LightManager {
         //tentative d'amélioration
         mat.setColor("Specular", ColorRGBA.White);
         mat.setFloat("Shininess", 16f);
+
+        return mat;
+    }
+
+    public static Material createMaterial(AssetManager assetManager, Texture texture) {
+        Material mat = new Material(assetManager,
+                "Common/MatDefs/Light/Lighting.j3md");
+
+        mat.setBoolean("UseMaterialColors", true);
+        mat.setTexture("DiffuseMap", texture);
+
+        //tentative d'amélioration
+        mat.setColor("Specular", ColorRGBA.White);
+        mat.setColor("Diffuse", ColorRGBA.White);
+        mat.setFloat("Shininess", 32f);
 
         return mat;
     }
