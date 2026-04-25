@@ -4,6 +4,7 @@ import com.jme3.asset.AssetManager;
 import com.jme3.material.Material;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
+import com.jme3.texture.Texture;
 import fr.univtln.pierre.samples.modele.*;
 
 public class BonusManager {
@@ -19,6 +20,8 @@ public class BonusManager {
 
     private Bonus currentBonus;
     private Geometry currentBonusGeometry;
+
+    private Texture texture;
 
     //respawn
 
@@ -70,9 +73,17 @@ public class BonusManager {
     private void spawnRandomBonus() {
         BonusType randomType = randomBonusType();
 
+        if (randomType == BonusType.PADDLE_MINUS || randomType == BonusType.SIZE_MINUS) {
+            texture = assetManager.loadTexture("textures/fire2.jpg");
+        }
+        else {
+            texture = assetManager.loadTexture("textures/leaf.jpg");
+        }
+
+
         currentBonus = new Bonus(0.2f, randomType, myPaddle, opponentPaddle, puck, table,move);
 
-        Material matBonus = LightManager.createMaterial(assetManager, currentBonus.getColor());
+        Material matBonus = LightManager.createMaterial(assetManager, texture);
         currentBonusGeometry = currentBonus.createGeometry();
         currentBonusGeometry.setMaterial(matBonus);
 

@@ -10,6 +10,8 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 
 import com.jme3.scene.Spatial;
+import com.jme3.scene.shape.Box;
+import com.jme3.texture.Texture;
 import fr.univtln.pierre.samples.modele.Bonus;
 import fr.univtln.pierre.samples.modele.BonusType;
 import fr.univtln.pierre.samples.modele.InvisibleWall;
@@ -80,20 +82,20 @@ public class GameScene {
 
 
 
-
-
-
-
         // table
         Table table =  new Table(2F, 4F, 0.1F, ColorRGBA.Blue);
-        Material matTable = LightManager.createMaterial(assetManager, table.getColor());
+        Texture tableTex = assetManager.loadTexture("textures/blue_surface.jpg");
+        Material matTable = LightManager.createMaterial(assetManager, tableTex);
+        matTable.setFloat("Shininess", 60f);
         Geometry tableGeometry = table.createGeometry();
         table.createPhysic(tableGeometry,bulletAppState);
         tableGeometry.setMaterial(matTable);
 
         // left side of the table
         Side leftSide = new Side(table, ColorRGBA.Brown);
-        Material matSide = LightManager.createMaterial(assetManager, leftSide.getColor());
+        Texture sideTex = assetManager.loadTexture("textures/wood.jpg");
+        Material matSide = LightManager.createMaterial(assetManager, sideTex);
+        matSide.setFloat("Shininess", 120f);
         Geometry leftSideGeometry = leftSide.createGeometryLeft();
         leftSide.createPhysic(leftSideGeometry, bulletAppState);
         leftSideGeometry.setMaterial(matSide);
@@ -104,7 +106,7 @@ public class GameScene {
         rightSide.createPhysic(rightSideGeometry, bulletAppState);
         rightSideGeometry.setMaterial(matSide);
 
-        // table base
+        // table base - not used finally
         TableBase tableBase =  new TableBase(table, leftSide, 2F, ColorRGBA.Brown);
         Material matBase = LightManager.createMaterial(assetManager, tableBase.getColor());
         Geometry tableBaseGeometry = table.createGeometry();
@@ -114,27 +116,33 @@ public class GameScene {
         // puck
         puck = new Puck(20, 10, 0.3F, 0.15F, ColorRGBA.LightGray, table);
         puck.putOnMySide();
-        Material matPuck = LightManager.createMaterial(assetManager,puck.getColor());
+        Texture puckTex = assetManager.loadTexture("textures/metal.jpg");
+        Material matPuck = LightManager.createMaterial(assetManager, puckTex);
         Geometry puckGeometry = puck.createGeometry();
         puck.createPhysic(puckGeometry, bulletAppState);
         puckGeometry.setMaterial(matPuck);
         ia.setPuck(puck);
-        this.puck = puck;
+        //this.puck = puck;
         puckStartPosition = new Vector3f(0f, 0.2f, 0f);
         puckMaxHeight = puckStartPosition.y + 0.05f;
 
 
         // my paddle
         myPaddle = new Paddle(0.4F, 0.2F, 0.1F, ColorRGBA.Gray);
-        Material matPaddle = LightManager.createMaterial(assetManager,myPaddle.getColor());
+        Texture myPaddleTex = assetManager.loadTexture("textures/yellow_wood.jpg");
+        Material matPaddle = LightManager.createMaterial(assetManager, myPaddleTex);
+        matPaddle.setFloat("Shininess", 120f);
         Geometry paddleGeometry = myPaddle.createGeometryMy(table);
         myPaddle.createPhysic(paddleGeometry,bulletAppState);
         paddleGeometry.setMaterial(matPaddle);
 
         // opponent's paddle
         opponentPaddle = new Paddle(0.4F, 0.2F, 0.1F, ColorRGBA.Gray);
+        Texture opponentPaddleTex = assetManager.loadTexture("textures/pink_wood.jpg");
+        Material matOpponentPaddle = LightManager.createMaterial(assetManager, opponentPaddleTex);
+        matOpponentPaddle.setFloat("Shininess", 120f);
         Geometry opponentPaddleGeometry = opponentPaddle.createGeometryOpponent(table);
-        opponentPaddleGeometry.setMaterial(matPaddle);
+        opponentPaddleGeometry.setMaterial(matOpponentPaddle);
         opponentPaddle.createPhysic(opponentPaddleGeometry,bulletAppState);
         ia.setPaddle(opponentPaddle);
 
