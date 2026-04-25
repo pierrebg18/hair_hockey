@@ -1,5 +1,6 @@
 package fr.univtln.pierre.samples.modele;
 
+import com.jme3.bullet.collision.shapes.BoxCollisionShape;
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.bullet.BulletAppState;
@@ -173,6 +174,15 @@ public class Puck {
             System.out.println("puckGeometry: " + puckGeometry);
             puckGeometry.setLocalScale(bonusScale);
         }
+
+
+//        if (puck_phy != null) {
+//            puck_phy.setCollisionShape(
+//                    new BoxCollisionShape(new Vector3f(radius, height, radius))
+//            );
+//            //puck_phy.setCcdSweptSphereRadius(radius * 0.8f);
+//        }
+
         System.out.println("BONUS PUCK APPLIQUE, scale = " + bonusScale);
     }
 
