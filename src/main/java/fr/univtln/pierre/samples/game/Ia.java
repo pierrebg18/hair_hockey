@@ -16,7 +16,25 @@ public class Ia {
     private float speed_x = 0.5f;
     private float speed_z = 3f;
     private float bad_position = 0; // compris entre 0 et 1 sert a rendre l'ia pas parfaite
-    
+    private static boolean service = false;
+    private static int cmpt=0;
+
+    public static void setService(boolean service) {
+        Ia.service = service;
+    }
+
+    public static boolean consumeService() {
+        if (service) {
+            cmpt+=1;
+            if (cmpt==20){
+                service = false;
+                cmpt=0;
+            }
+            return true;
+        }
+        return false;
+    }
+
     public void niveauIa(int Niveau){
         if (Niveau==1){
         setSpeed_x(0.5f);
@@ -55,8 +73,10 @@ public class Ia {
     public void simpleUpdateIaMove(float tpf, Vector3f lastPos) {
 
         boolean hasMoved = puck.hasMoved(lastPos);
+        boolean launchService = consumeService();
+        boolean shouldMove = hasMoved || launchService || back;
         // sait si mouvement du palais en x ou z
-        if (hasMoved) {
+        if (shouldMove) {
             
             Vector3f velocity = new Vector3f(0, 0, 0);
 
@@ -81,12 +101,16 @@ public class Ia {
             }
             
             //en z pour taper
-            if (puckCoord.z < -1.5f){
+            if (launchService && cmpt==3){
+                velocity.z += speed_z;
+                back=true;
+            }
+            if (puckCoord.z <= -1.5f){
                 velocity.z += speed_z;
                 back=true;
             }
             else if(back){
-                velocity.z -= speed_z;
+                velocity.z -= speed_z*2;
                 back=false;
 
             }
@@ -98,6 +122,8 @@ public class Ia {
             paddle.getPaddle_phy().setLinearVelocity(velocity);
             // clone() cree une copie independante de la position physique
             paddle.setposition(paddle.getPaddle_phy().getPhysicsLocation().clone());
+        } else {
+            paddle.getPaddle_phy().setLinearVelocity(Vector3f.ZERO);
         }
 
         puck.setPosition(puck.getPuck_phy().getPhysicsLocation().clone());

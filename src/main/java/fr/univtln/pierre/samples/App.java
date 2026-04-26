@@ -100,6 +100,14 @@ public class App extends SimpleApplication implements ActionListener {
         return cam.getHeight();
     }
 
+    public GameScene getGameScene() {
+        return gameScene;
+    }
+
+    public void setGameScene(GameScene gameScene) {
+        this.gameScene = gameScene;
+    }
+
     public void onAction(String name, boolean isPressed, float tpf) {
         if (!isPressed) {
             return;
