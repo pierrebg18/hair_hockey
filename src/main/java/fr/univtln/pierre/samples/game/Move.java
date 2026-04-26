@@ -158,7 +158,9 @@ public class Move implements ActionListener{
         if (puck.getPuck_phy().getPhysicsLocation().y < -0.5){
             // put on side of that who lost
             System.out.println("Reset puck fall" + puck.getPuck_phy().getPhysicsLocation().z);
-            puck.resetPuck(puck.getPuck_phy().getPhysicsLocation().z>0?0:1);
+            int side = puck.getPuck_phy().getPhysicsLocation().z > 0 ? 0 : 1;
+            puck.resetPuck(side);
+            Ia.setService(side == 1);
         }
     }
 
@@ -198,7 +200,9 @@ public class Move implements ActionListener{
             timeInCenter += 1;
             if (timeInCenter > 240){
                 // put on opposite side from that one who touched the last
-                puck.resetPuck(lastTouch==0?1:0);
+                int side = lastTouch == 0 ? 1 : 0;
+                puck.resetPuck(side);
+                Ia.setService(side == 1);
             }
         }
         else timeInCenter = 0;
@@ -214,6 +218,7 @@ public class Move implements ActionListener{
             if (timeNoMove > 360){
                 System.out.println("Was not moving for a long");
                 puck.resetPuck(0); // put on my side in this case
+                Ia.setService(false);
                 timeNoMove = 0;
             }
         }
