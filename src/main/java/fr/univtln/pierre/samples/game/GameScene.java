@@ -330,7 +330,7 @@ public class GameScene {
     public void updateGame() {
         Rule.endRound(puck, puckStartPosition);
         if (!modeJeu) {
-            if (Rule.player1Count == 2) {
+            if (Rule.player1Count == 12) {
                 //Tournament.addLevel();
                 //Tournament.addLevel();
                 //Tournament.addLevel();
@@ -343,7 +343,7 @@ public class GameScene {
                 if (lvl == 6) {
                     this.gameOver = 1;
                 }
-            } else if (Rule.player2Count == 10) {
+            } else if (Rule.player2Count == 12) {
                 this.gameOver = -1;
             }
         }
