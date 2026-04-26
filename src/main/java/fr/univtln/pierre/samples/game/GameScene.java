@@ -64,11 +64,14 @@ public class GameScene {
     }
 
     private static Node pivot;
+    private Spatial currentEnemy = null;
+    /*
     private static Spatial enemy1;
     private static Spatial enemy2;
     private static Spatial enemy3;
     private static Spatial enemy4;
     private static Spatial enemy5;
+    */
 
     public void init() {
 
@@ -204,16 +207,6 @@ public class GameScene {
         );
         bonusManager.initBonus();
 
-//        Bonus bonus = new Bonus(0.2f, BonusType.PADDLE_MINUS, myPaddle, opponentPaddle, puck, table);
-//        Material matBonus = LightManager.createMaterial(assetManager, bonus.getColor());
-//        Geometry bonusGeometry = bonus.createGeometry();
-//        //myPaddle.createPhysic(paddleGeometry,bulletAppState);
-//        bonusGeometry.setMaterial(matBonus);
-//        move.setBonus(bonus);
-//        move.setPuckShape(puckGeometry);
-//        move.setBonusGeometry(bonusGeometry);
-//        move.setPivot(pivot);
-
         // persons figures
         /*
         // me
@@ -224,58 +217,6 @@ public class GameScene {
 
          */
 
-        // enemy 1
-        enemy1 = assetManager.loadModel("person/source/model/model_mesh.obj");
-        enemy1.scale(4f, 4f, 4f);
-        enemy1.setLocalTranslation(0.0f, 0.0f, -table.getLenght()-2f);
-
-        // enemy 2
-        enemy2 = assetManager.loadModel("grandmother/source/model/grandmother.glb");
-        enemy2.scale(0.015f, 0.015f, 0.015f);
-        enemy2.rotate(0.0f, 3f, 0.0f);
-        enemy2.setLocalTranslation(0.0f, -2.0f, -table.getLenght()-1f);
-
-        // supprimer les contrôles des textures
-        enemy2.depthFirstTraversal(spatial -> {
-            spatial.removeControl(SkinningControl.class);
-            spatial.removeControl(AnimComposer.class);
-        });
-
-        // enemy 3
-        /*
-        enemy3 = assetManager.loadModel("man_in_suit/source/model/model.glb");
-        enemy3.scale(4f, 4f, 4f);
-        enemy3.setLocalTranslation(0.0f, -1.0f, -table.getLenght()-2f);
-         */
-        enemy3 = assetManager.loadModel("king/armored_king.glb");
-        enemy3.scale(5f, 5f, 5f);
-        enemy3.rotate(0.0f, 3.2f, 0.0f);
-        enemy3.setLocalTranslation(0f, -1f, -table.getLenght()-2f);
-
-        enemy3.depthFirstTraversal(spatial -> {
-            spatial.removeControl(SkinningControl.class);
-            spatial.removeControl(AnimComposer.class);
-        });
-
-        // enemy 4
-        enemy4 = assetManager.loadModel("dark_fairy/source/model/dark_fairy.glb");
-        enemy4.scale(6f, 6f, 6f);
-        enemy4.setLocalTranslation(0.0f, 0.0f, -table.getLenght()-1f);
-
-        enemy4.depthFirstTraversal(spatial -> {
-            spatial.removeControl(SkinningControl.class);
-            spatial.removeControl(AnimComposer.class);
-        });
-
-        // enemy 5
-        enemy5 = assetManager.loadModel("viking/viking_warrior.glb");
-        enemy5.scale(0.5f, 0.5f, 0.5f);
-        enemy5.setLocalTranslation(0f, 3f, -table.getLenght()-2f);
-
-        enemy5.depthFirstTraversal(spatial -> {
-            spatial.removeControl(SkinningControl.class);
-            spatial.removeControl(AnimComposer.class);
-        });
 
         // to display collision shapes
         // bulletAppState.setDebugEnabled(true);
@@ -287,9 +228,7 @@ public class GameScene {
         pivot.attachChild(puckGeometry);
         pivot.attachChild(paddleGeometry);
         pivot.attachChild(opponentPaddleGeometry);
-        //pivot.attachChild(bonusGeometry);
-        //pivot.attachChild(me);
-        pivot.attachChild(enemy1);
+        displayEnemy(1);
 
         //permet de gérer l'ia
         Last_position = ia.getPuck().getPuck_phy().getPhysicsLocation().clone();
@@ -308,54 +247,83 @@ public class GameScene {
         puck.getPuck_phy().clearForces();
     }
 
-    public static void displayEnemy1(){
-        System.out.println("Display enemy 1");
-        pivot.attachChild(enemy1);
+    public void displayEnemy(int level){
+        switch (level) {
+            case 1:
+                currentEnemy = assetManager.loadModel("person/source/model/model_mesh.obj");
+                currentEnemy.scale(4f, 4f, 4f);
+                currentEnemy.setLocalTranslation(0.0f, 0.0f, -6f);
+
+                pivot.attachChild(currentEnemy);
+                break;
+            case 2 :
+                detachEnemy();
+                currentEnemy = assetManager.loadModel("grandmother/source/model/grandmother.glb");
+                currentEnemy.scale(0.015f, 0.015f, 0.015f);
+                currentEnemy.rotate(0.0f, 3f, 0.0f);
+                currentEnemy.setLocalTranslation(0.0f, -3.0f, -5f);
+                removeAnimControls(currentEnemy);
+                pivot.attachChild(currentEnemy);
+                break;
+            case 3:
+                detachEnemy();
+                currentEnemy = assetManager.loadModel("king/armored_king.glb");
+                currentEnemy.scale(5f, 5f, 5f);
+                currentEnemy.rotate(0.0f, 3.2f, 0.0f);
+                currentEnemy.setLocalTranslation(0f, -1f, -6f);
+                removeAnimControls(currentEnemy);
+                pivot.attachChild(currentEnemy);
+                break;
+            case 4:
+                detachEnemy();
+                currentEnemy = assetManager.loadModel("dark_fairy/source/model/dark_fairy.glb");
+                currentEnemy.scale(6f, 6f, 6f);
+                currentEnemy.setLocalTranslation(0.0f, 0.0f, -5f);
+                removeAnimControls(currentEnemy);
+                pivot.attachChild(currentEnemy);
+                break;
+            case 5:
+                detachEnemy();
+                currentEnemy = assetManager.loadModel("viking/viking_warrior.glb");
+                currentEnemy.scale(0.5f, 0.5f, 0.5f);
+                currentEnemy.setLocalTranslation(0f, 3f, -6f);
+                removeAnimControls(currentEnemy);
+                pivot.attachChild(currentEnemy);
+                break;
+            case 6:
+                detachEnemy();
+                currentEnemy = assetManager.loadModel("cat/cat.glb");
+                currentEnemy.scale(2f, 2f, 2f);
+                currentEnemy.setLocalTranslation(-1.2f, 1.5f, 1.0f);
+                currentEnemy.rotate(-1f, 0f, 0f);
+
+                currentEnemy.depthFirstTraversal(spatial -> {
+                    // automatic cast to geometry
+                    if (spatial instanceof Geometry geom) {
+                        Material mat = new Material(assetManager, "Common/MatDefs/Misc/Unshaded.j3md");
+                        mat.setColor("Color", ColorRGBA.Yellow);
+                        geom.setMaterial(mat);
+                    }
+                });
+
+                pivot.attachChild(currentEnemy);
+        }
     }
 
-    public static void hideEnemy1(){
-        System.out.println("Hide enemy 1");
-        pivot.detachChild(enemy1);
+    public void detachEnemy(){
+        if (currentEnemy != null){
+            pivot.detachChild(currentEnemy);
+            currentEnemy = null;
+            // libérer les textures non partagées
+            assetManager.clearCache();
+        }
     }
 
-    public static void displayEnemy2(){
-        System.out.println("Display enemy 2");
-        pivot.attachChild(enemy2);
-    }
-
-    public static void hideEnemy2(){
-        System.out.println("Hide enemy 2");
-        pivot.detachChild(enemy2);
-    }
-
-    public static void displayEnemy3(){
-        System.out.println("Display enemy 3");
-        pivot.attachChild(enemy3);
-    }
-
-    public static void hideEnemy3(){
-        System.out.println("Hide enemy 3");
-        pivot.detachChild(enemy3);
-    }
-
-    public static void displayEnemy4(){
-        System.out.println("Display enemy 4");
-        pivot.attachChild(enemy4);
-    }
-
-    public static void hideEnemy4(){
-        System.out.println("Hide enemy 4");
-        pivot.detachChild(enemy4);
-    }
-
-    public static void displayEnemy5(){
-        System.out.println("Display enemy 5");
-        pivot.attachChild(enemy5);
-    }
-
-    public static void hideEnemy5(){
-        System.out.println("Hide enemy 5");
-        pivot.detachChild(enemy5);
+    public void removeAnimControls(Spatial spatial){
+        spatial.depthFirstTraversal(s -> {
+            s.removeControl(SkinningControl.class);
+            s.removeControl(AnimComposer.class);
+        });
     }
 
     
@@ -368,7 +336,7 @@ public class GameScene {
                 //Tournament.addLevel();
                 //Tournament.addLevel();
                 Tournament.addLevel();
-                lvl = Tournament.updateLevel(ia, move);
+                lvl = Tournament.updateLevel(ia, move, this);
                 Rule.player1Count = 0;
                 Rule.player2Count = 0;
                 //condition win

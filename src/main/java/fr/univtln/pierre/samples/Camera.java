@@ -12,8 +12,8 @@ public class Camera {
     }
 
     public void placeCameraMySide() {
-        camera.setLocation(new Vector3f(0, 4f, 9f));
-        camera.lookAt(new Vector3f(0, 0, 0), new Vector3f(0, 2, -5));
+        camera.setLocation(new Vector3f(0, 5f, 9f));
+        camera.lookAt(new Vector3f(0, 0, 0), new Vector3f(0, 8, -10));
     }
 
     public void placeCameraOpponentSide() {
